@@ -1,0 +1,89 @@
+@use "../../styles/variables" as *;
+
+.navigation {
+	display: flex;
+	align-items: center;
+	gap: $size-l;
+
+	.auth {
+		background-color: $color-accent;
+		color: $color-light;
+		display: flex;
+		align-items: center;
+		gap: $size-xs;
+		padding: $size-m;
+		border-radius: $size-xs;
+		transition: all 0.3s;
+		height: 40px;
+	}
+
+	.auth:hover {
+		background-color: $color-accent-hover;
+		box-shadow: 3px 3px 10px $color-darck-opasity;
+	}
+}
+
+.menu {
+	position: absolute;
+	width: 320px;
+	background-color: $color-light;
+	display: flex;
+	flex-direction: column;
+	right: 10px;
+	top: 108px;
+	padding: $size-xxl $size-m;
+	border-radius: $size-xs;
+	border: 1px solid $color-darck-opasity;
+	box-shadow: 0 0 5px $color-darck-opasity;
+	gap: $size-l;
+
+	.link {
+		display: flex;
+		gap: $size-xs;
+		position: relative;
+		padding: $size-xxs $size-xs;
+		transition: color 0.3s;
+	}
+
+	.link:hover {
+		color: $color-accent;
+	}
+
+	.link::after {
+		content: "";
+		position: absolute;
+		height: 1px;
+		width: 0;
+		background-color: $color-accent;
+		left: 0;
+		bottom: -1px;
+		transition: width 0.3s;
+	}
+
+	.link:hover::after {
+		width: 100%;
+	}
+
+	.active {
+		color: $color-accent;
+		padding-bottom: $size-xxs;
+		border-bottom: 1px solid;
+		font-weight: 600;
+	}
+}
+
+.burger-menu {
+	width: 40px;
+	height: 40px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+@media (max-width: 650px) {
+	.menu {
+		width: calc(100% - 20px);
+		top: 100px;
+	}
+	
+}

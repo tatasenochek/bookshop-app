@@ -1,0 +1,29 @@
+@use "../../styles/variables" as *;
+
+.header {
+	padding: $size-m 0 $size-xl;
+	display: flex;
+	justify-content: space-between;
+	border-bottom: 1px solid $color-darck-opasity;
+	align-items: center;
+	margin-bottom: $size-xxl;
+	flex-wrap: wrap;
+
+	.logo {
+		display: flex;
+		gap: $size-xs;
+		align-items: center;
+
+		.image {
+			width: 50px;
+		}
+
+		.title {
+			font-size: $size-m;
+			text-transform: uppercase;
+			line-height: 1.2;
+			width: 80px;
+			word-wrap: break-word;
+		}
+	}
+}

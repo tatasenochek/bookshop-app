@@ -1,0 +1,38 @@
+@use "./variables" as *;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: $font-main;
+  margin: 10px auto;
+  padding: 0 10px;
+  color: $color-darck;
+  background-color: $color-bg;
+  max-width: 1440px;
+  min-width: 375px;
+  min-height: 100vh;
+}
+
+button {
+  border: 1px solid transparent;
+  font-family: $font-main;
+  background-color: $color-accent;
+  color: $color-light;
+  border-radius: $size-xs;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+a {
+  color: $color-darck;
+  font-family: $font-main;
+  text-decoration: none;
+}
+
+h1, h2, h3 {
+  font-family: $font-heading;
+}
