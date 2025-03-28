@@ -1,5 +1,49 @@
 @use "../../styles/variables" as *;
 
 .add-book {
-  background-color: aqua;
+	background-color: $color-light;
+	width: 355px;
+	margin: 0 auto;
+	padding: $size-m;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+
+	.form {
+		margin-top: $size-l;
+		margin-bottom: $size-l;
+		display: flex;
+		flex-direction: column;
+		gap: $size-m;
+
+		.label {
+			display: flex;
+			flex-direction: column;
+			gap: $size-xs;
+
+			.text {
+				color: $color-accent;
+			}
+
+			.select {
+				height: 40px;
+				padding: $size-xs;
+				border-radius: $size-xs;
+				border: 1px solid $color-darck-opasity;
+				box-shadow: 0 0 5px $color-darck-opasity;
+				font-size: 16px;
+				color: inherit;
+			}
+
+			.textarea {
+				height: 140px;
+				padding: $size-xs;
+				border-radius: $size-xs;
+				border: 1px solid $color-darck-opasity;
+				box-shadow: 0 0 5px $color-darck-opasity;
+				font-size: 16px;
+				color: inherit;
+			}
+		}
+	}
 }
