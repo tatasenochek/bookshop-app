@@ -3,7 +3,7 @@ import styles from "./navigation.module.scss";
 import clsx from "clsx";
 import { Book, BookHeart, BookPlus, LibraryBig, Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { auth, db } from "../../firebase/config";
+import { auth, firestore } from "../../firebase/config";
 import { doc, getDoc } from "firebase/firestore";
 import Button from "../Button/Button";
 
@@ -14,7 +14,7 @@ function Navigation() {
 	async function getUser() {
 		auth.onAuthStateChanged(async (user) => {
 			if (user) {
-				const docRef = doc(db, "User", user.uid);
+				const docRef = doc(firestore, "User", user.uid);
 				const docSnap = await getDoc(docRef);
 				if (docSnap.exists()) {
 					const userData = docSnap.data();

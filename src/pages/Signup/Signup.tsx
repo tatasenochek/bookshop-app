@@ -4,7 +4,7 @@ import { FormEvent } from "react";
 import Input from "../../components/Input/Input";
 import Button from "../../components/Button/Button";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth, db } from "../../firebase/config";
+import { auth, firestore } from "../../firebase/config";
 import { ISignupForm } from "./signup.props";
 import { doc, setDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
@@ -27,7 +27,7 @@ function Signup() {
 			const user = res.user;
 			console.log(user);
 			if (user) {
-				await setDoc(doc(db, "User", user.uid), {
+				await setDoc(doc(firestore, "User", user.uid), {
 					email: user.email,
 					name,
 				});

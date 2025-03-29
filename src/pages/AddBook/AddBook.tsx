@@ -3,7 +3,7 @@ import styles from "./add-book.module.scss";
 import Input from "../../components/Input/Input";
 import Button from "../../components/Button/Button";
 import { genres } from "../../const/const";
-import { auth, database } from "../../firebase/config";
+import { auth, realtimeDb } from "../../firebase/config";
 import { toast } from "react-toastify";
 import { push, ref, set } from "firebase/database";
 
@@ -28,7 +28,7 @@ function AddBook() {
 
 		const form = e.target as HTMLFormElement;
 		const formData = new FormData(form);
-		const bookRef = ref(database, "books");
+		const bookRef = ref(realtimeDb, "books");
 		const newBookRef = push(bookRef);
 
 		const bookData: IAddBook = {

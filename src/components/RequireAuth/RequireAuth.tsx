@@ -2,7 +2,7 @@ import { ReactNode, useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { auth } from "../../firebase/config";
 
-export function RequireAyth({ children }: { children: ReactNode }) {
+function RequireAuth({ children }: { children: ReactNode }) {
 	const [isUserSignin, setIsUserSignin] = useState<boolean>(true);
 
 	useEffect(() => {
@@ -21,3 +21,5 @@ export function RequireAyth({ children }: { children: ReactNode }) {
 
 	return children;
 }
+
+export default RequireAuth;

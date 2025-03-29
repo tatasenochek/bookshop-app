@@ -8,10 +8,10 @@ import NotFound from "./pages/NotFound/NotFound";
 import Book from "./pages/Book/Book";
 import Signin from "./pages/Signin/Signin";
 import Signup from "./pages/Signup/Signup";
+import RequireAuth from "./components/RequireAuth/RequireAuth";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ROUTES } from "./const/const";
-import { RequireAyth } from "./components/RequireAyth/RequireAyth";
 
 const router = createBrowserRouter(
 	[
@@ -42,25 +42,25 @@ const router = createBrowserRouter(
 				{
 					path: ROUTES.ADD_BOOK,
 					element: (
-						<RequireAyth>
+						<RequireAuth>
 							<AddBook />
-						</RequireAyth>
+						</RequireAuth>
 					),
 				},
 				{
 					path: ROUTES.MY_BOOKS,
 					element: (
-						<RequireAyth>
+						<RequireAuth>
 							<MyBooks />
-						</RequireAyth>
+						</RequireAuth>
 					),
 				},
 				{
 					path: ROUTES.FAVORITE,
 					element: (
-						<RequireAyth>
+						<RequireAuth>
 							<Favorite />
-						</RequireAyth>
+						</RequireAuth>
 					),
 				},
 				{
