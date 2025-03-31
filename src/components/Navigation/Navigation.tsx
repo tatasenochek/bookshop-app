@@ -16,10 +16,15 @@ function Navigation() {
 			if (user) {
 				const docRef = doc(firestore, "User", user.uid);
 				const docSnap = await getDoc(docRef);
+
 				if (docSnap.exists()) {
 					const userData = docSnap.data();
 					setUserName(userData.name);
+				} else {
+					console.error("Пользователь не найден.");
 				}
+			} else {
+				console.error("Пользователь не аутентифицирован.");
 			}
 		});
 	}
@@ -47,12 +52,12 @@ function Navigation() {
 						Войти
 					</Link>
 				)}
-				<Button
+				<button
 					onClick={() => setIsModalOpen(!isModalOpen)}
 					className={clsx(styles["burger-menu"])}
 				>
 					{isModalOpen === false ? <Menu /> : <X />}
-				</Button>
+				</button>
 			</div>
 			{isModalOpen === true && (
 				<nav className={styles["menu"]}>

@@ -1,7 +1,10 @@
+import { useParams } from "react-router-dom";
 import styles from "./book.module.scss";
 
 function Book() {
-	return <div className={styles["book"]}>Book</div>;
+	const { id } = useParams()
+	
+	return <div className={styles["book"]}>Book { id }</div>;
 }
 
 export default Book;

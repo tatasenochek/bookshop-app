@@ -1,0 +1,67 @@
+@use "../../styles/variables" as *;
+
+.card-book {
+	max-width: 355px;
+	padding: $size-m;
+	border: 1px solid $color-darck-opasity;
+	border-radius: $size-s;
+	transition: all 0.3s;
+
+	.image {
+		width: 100%;
+	}
+
+	.title {
+		padding-top: $size-m;
+		padding-bottom: $size-s;
+	}
+
+	.author {
+		color: $color-accent;
+		padding-bottom: $size-m;
+	}
+
+	.action {
+		display: flex;
+		height: 40px;
+		gap: $size-m;
+
+		.link {
+			width: calc(100% - 40px);
+			color: $color-accent;
+			border: 1px solid $color-darck-opasity;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			border-radius: $size-xs;
+      transition: all 0.3s;
+		}
+
+		.button {
+			width: 40px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			background-color: transparent;
+			color: $color-accent;
+			border: 1px solid $color-darck-opasity;
+			border-radius: $size-xs;
+      transition: all 0.3s;
+		}
+
+		.button-favorite {
+			color: red;
+      transition: all 0.3s;
+		}
+
+    .link:hover, .button-favorite:hover, .button:hover {
+      border: 1px solid $color-accent;
+    }
+	}
+}
+
+.card-book:hover {
+	background-color: $color-light;
+	transform: scale(1.01);
+	box-shadow: 0 0 10px $color-darck-opasity;
+}
