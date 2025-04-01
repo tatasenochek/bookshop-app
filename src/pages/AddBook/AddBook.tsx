@@ -51,6 +51,7 @@ function AddBook() {
 					userId: user.uid,
 					createdAt: book.createdAt,
 				});
+				
 				toast.success("Книга успешно обновлена!");
 				navigate(`/book/${book.id}`);
 			} else {
@@ -62,6 +63,10 @@ function AddBook() {
 					userId: user.uid,
 					createdAt: Date.now(),
 				});
+				await set(
+					ref(realtimeDb, `user_books/${user.uid}/${newBookRef.key}`),
+					true
+				); 
 				toast.success("Книга успешно добавлена!");
 				navigate("/");
 			}

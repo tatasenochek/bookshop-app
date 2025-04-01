@@ -1,7 +1,4 @@
-import { useEffect, useState } from "react";
 import styles from "./card-book-list.module.scss";
-import { realtimeDb } from "../../firebase/config";
-import { get, ref } from "firebase/database";
 import CardBook from "../../components/CardBook/CardBook";
 
 export interface IBook {
@@ -16,22 +13,7 @@ export interface IBook {
 	userId?: string;
 }
 
-function CardBookList() {
-  const [booksList, setBooksList] = useState<IBook[]>([]);
-
-	async function getBooks() {
-		const bookRef = ref(realtimeDb, "books");
-		const snapshot = await get(bookRef);
-		if (!snapshot.exists()) {
-			console.log("Ошибка при получении данных");
-		}
-    setBooksList(Object.values(snapshot.val()));
-  }
-
-	useEffect(() => {
-    getBooks();
-	}, []);
-
+function CardBookList({ booksList }: { booksList: IBook[] }) {
 	return (
 		<ul className={styles["homecard-book-list"]}>
 			{booksList.map((book: IBook) => (
