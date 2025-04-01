@@ -3,8 +3,7 @@
 .signup {
 	width: 355px;
 	margin: 0 auto;
-	padding: $size-m;
-	background-color: $color-light;
+	padding: $size-xxl $size-m;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -15,26 +14,11 @@
 		display: flex;
 		flex-direction: column;
 		gap: $size-m;
-
-		
 	}
 
-	.text {
-		text-align: center;
-		padding-bottom: $size-s;
-	}
-
-	.link {
-		border: 1px solid;
-		margin: auto;
-		color: $color-accent;
-		padding: $size-xs $size-m;
-		border-radius: $size-xs;
-		transition: all 0.3s;
-	}
-
-	.link:hover {
-		background-color: $color-accent;
-		color: $color-light;
+	.action {
+		display: flex;
+		gap: $size-m;
+		justify-content: center;
 	}
 }

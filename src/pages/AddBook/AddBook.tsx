@@ -167,7 +167,7 @@ function AddBook() {
 						))}
 					</select>
 				</label>
-				<Button>{book ? "Сохранить изменения" : "Добавить книгу"}</Button>
+				<Button isPrimary>{book ? "Сохранить изменения" : "Добавить книгу"}</Button>
 			</form>
 		</div>
 	);

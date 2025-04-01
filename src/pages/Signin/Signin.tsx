@@ -48,12 +48,14 @@ const navigate = useNavigate();
 					minLength={3}
 					required
 				/>
-				<Button>Отправить</Button>
+				<Button isPrimary>Отправить</Button>
 			</form>
-			<span className={styles["text"]}>Нет акканута?</span>
-			<Link className={styles["link"]} to="/signup">
-				Зарегистрироваться
-			</Link>
+			<div className={styles["action"]}>
+				<span className={styles["text"]}>Есть акканут?</span>
+				<Link className={styles["link"]} to="/signup">
+					Зарегистрироваться
+				</Link>
+			</div>
 		</div>
 	);
 }
