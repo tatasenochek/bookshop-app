@@ -2,6 +2,11 @@ import { ReactNode } from "react";
 
 export interface IButtonProps {
 	children: ReactNode;
-	className?: string;
 	onClick?: () => void;
+	isSecond?: boolean;
+	isPrimary?: boolean;
+	isLink?: boolean;
+	isFavorite?: boolean;
+	isSvg?: boolean;
+	title?: string;
 }

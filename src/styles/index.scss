@@ -17,16 +17,6 @@ body {
   min-height: 100vh;
 }
 
-button {
-  border: 1px solid transparent;
-  font-family: $font-main;
-  background-color: $color-accent;
-  color: $color-light;
-  border-radius: $size-xs;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
 a {
   color: $color-darck;
   font-family: $font-main;

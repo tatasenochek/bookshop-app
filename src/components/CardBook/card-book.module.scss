@@ -1,14 +1,17 @@
 @use "../../styles/variables" as *;
 
 .card-book {
-	max-width: 355px;
+	width: 250px;
 	padding: $size-m;
 	border: 1px solid $color-darck-opasity;
 	border-radius: $size-s;
 	transition: all 0.3s;
 
 	.image {
-		width: 100%;
+		width: calc(250px - $size-m * 2);
+		height: 320px;
+		object-fit: cover;
+		object-position: top;
 	}
 
 	.title {
@@ -34,29 +37,12 @@
 			justify-content: center;
 			align-items: center;
 			border-radius: $size-xs;
-      transition: all 0.3s;
+			transition: all 0.3s;
 		}
 
-		.button {
-			width: 40px;
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			background-color: transparent;
-			color: $color-accent;
-			border: 1px solid $color-darck-opasity;
-			border-radius: $size-xs;
-      transition: all 0.3s;
+		.link:hover {
+			border: 1px solid $color-accent;
 		}
-
-		.button-favorite {
-			color: red;
-      transition: all 0.3s;
-		}
-
-    .link:hover, .button-favorite:hover, .button:hover {
-      border: 1px solid $color-accent;
-    }
 	}
 }
 

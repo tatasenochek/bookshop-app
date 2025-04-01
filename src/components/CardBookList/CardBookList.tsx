@@ -14,7 +14,6 @@ export interface IBook {
 	rating?: string;
 	createdAt?: number;
 	userId?: string;
-	isFavorite?: boolean;
 }
 
 function CardBookList() {

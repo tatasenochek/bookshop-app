@@ -1,3 +1,34 @@
+@use "../../styles/variables" as *;
+
 .book {
-  background-color: gold;
+	margin-top: $size-xxl;
+	display: flex;
+	gap: $size-xxl;
+
+	.image {
+		max-width: 355px;
+	}
+
+	.book-info {
+		width: 355px;
+
+		.author {
+			padding: $size-s 0 $size-xxl;
+			color: $color-accent;
+		}
+
+		.info {
+			padding-bottom: $size-s;
+		}
+
+		.info:last-of-type {
+			padding-bottom: $size-xxl;
+		}
+	}
+
+	.book-action {
+		display: flex;
+		gap: $size-xxl;
+		justify-content: space-between;
+	}
 }

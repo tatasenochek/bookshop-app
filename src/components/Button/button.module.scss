@@ -4,12 +4,55 @@
 	border: 1px solid;
 	height: 40px;
 	font-size: 16px;
-	margin: auto;
 	padding: $size-xs $size-m;
 	border-radius: $size-xs;
 	transition: all 0.3s;
+	cursor: pointer;
 }
 
-.button:hover {
+.primary {
+	border: 1px solid $color-accent;
+	background-color: $color-accent;
+	color: $color-light;
+}
+
+.primary:hover {
 	background-color: $color-accent-hover;
+}
+
+.second {
+	border: 1px solid $color-darck-opasity;
+	background-color: transparent;
+	color: $color-accent;
+	transition: all 0.3s;
+}
+
+.second:hover {
+	border: 1px solid $color-accent-hover;
+}
+
+.link {
+	border: none;
+	background: none;
+	padding: 0;
+	display: flex;
+	align-items: center;
+	width: 100px;
+	color: $color-accent;
+	cursor: pointer;
+}
+
+.favorite {
+	svg {
+		color: red;
+	}
+	
+	transition: all 0.3s;
+}
+
+.onlySVG {
+	width: 40px;
+	height: 40px;
+	padding: 0;
+	padding-top: 3px;
 }

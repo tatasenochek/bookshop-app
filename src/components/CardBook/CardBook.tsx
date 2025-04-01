@@ -3,7 +3,7 @@ import { IBook } from "../CardBookList/CardBookList";
 import styles from "./card-book.module.scss";
 import { Book, BookHeart } from "lucide-react";
 import { useState } from "react";
-import clsx from "clsx";
+import Button from "../Button/Button";
 
 function CardBook(props: IBook) {
 	const [isFavorite, setIsFavorite] = useState<boolean>(false);
@@ -26,16 +26,15 @@ function CardBook(props: IBook) {
 				<Link className={styles["link"]} to={`/book/${props.id}`}>
 					Подробнее
 				</Link>
-				<button
+				<Button
 					title="Добавить в избранное"
-					className={clsx(
-						styles["button"],
-						isFavorite && styles["button-favorite"]
-					)}
+					isSecond
+					isSvg
+					isFavorite={isFavorite}
 					onClick={handlerFavoriteButton}
 				>
 					{isFavorite ? <BookHeart /> : <Book />}
-				</button>
+				</Button>
 			</div>
 		</div>
 	);

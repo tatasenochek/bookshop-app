@@ -30,12 +30,18 @@ function Navigation() {
 	}
 
 	async function handlerSignout() {
-		try {
-			await auth.signOut();
-			setUserName(null);
-		} catch (error) {
-			console.log(error);
+		const res = confirm("Вы действительно хотите выйти из личного кабинета?");
+
+		if (res) {
+			try {
+				await auth.signOut();
+				setUserName(null);
+			} catch (error) {
+				console.log(error);
+			}
 		}
+
+		return;
 	}
 
 	useEffect(() => {
@@ -46,18 +52,19 @@ function Navigation() {
 		<>
 			<div className={styles["navigation"]}>
 				{userName ? (
-					<Button onClick={handlerSignout}>{userName}</Button>
+					<Button title="Меню" isPrimary onClick={handlerSignout}>{userName}</Button>
 				) : (
 					<Link className={styles["auth"]} to="/signin">
 						Войти
 					</Link>
 				)}
-				<button
+				<Button
+					isSvg
 					onClick={() => setIsModalOpen(!isModalOpen)}
-					className={clsx(styles["burger-menu"])}
+					isSecond
 				>
 					{isModalOpen === false ? <Menu /> : <X />}
-				</button>
+				</Button>
 			</div>
 			{isModalOpen === true && (
 				<nav className={styles["menu"]}>

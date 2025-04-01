@@ -72,14 +72,6 @@
 	}
 }
 
-.burger-menu {
-	width: 40px;
-	height: 40px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
 @media (max-width: 650px) {
 	.menu {
 		width: calc(100% - 20px);
