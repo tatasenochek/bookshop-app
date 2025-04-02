@@ -11,6 +11,7 @@ export interface IBook {
 	rating?: string;
 	createdAt?: number;
 	userId?: string;
+	isFavorite: boolean;
 }
 
 function CardBookList({ booksList }: { booksList: IBook[] }) {
@@ -21,9 +22,10 @@ function CardBookList({ booksList }: { booksList: IBook[] }) {
 					<CardBook
 						photoLink={book.photoLink}
 						bookName={book.bookName}
-            author={book.author}
-            id={book.id}
-            userId={book.userId}
+						author={book.author}
+						id={book.id}
+						userId={book.userId}
+						isFavorite={book.isFavorite}
 					/>
 				</li>
 			))}

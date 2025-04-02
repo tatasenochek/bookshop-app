@@ -9,32 +9,22 @@ import { push, ref, set } from "firebase/database";
 import { useLocation, useNavigate } from "react-router-dom";
 import { IBook } from "../../components/CardBookList/CardBookList";
 
-interface IBookData {
-	id?: string;
-	photoLink: string;
-	bookName: string;
-	author: string;
-	genre: string;
-	description: string;
-	rating: string;
-	userId?: string;
-	createdAt?: number;
-}
-
-const initialState: IBookData = {
+const initialState: IBook = {
+	id: "",
 	photoLink: "",
 	bookName: "",
 	author: "",
 	genre: "",
 	description: "",
 	rating: "",
+	isFavorite: false,
 };
 
 function AddBook() {
 	const navigate = useNavigate();
 	const { state } = useLocation();
 	const book: IBook = state?.book;
-	const [formData, setFormData] = useState<IBookData>(initialState);
+	const [formData, setFormData] = useState<IBook>(initialState);
 
 	async function handlerFormSubmit(e: FormEvent) {
 		e.preventDefault();
@@ -51,7 +41,7 @@ function AddBook() {
 					userId: user.uid,
 					createdAt: book.createdAt,
 				});
-				
+				await set(ref(realtimeDb, `user_books/${user.uid}/${book.id}`), true); 
 				toast.success("Книга успешно обновлена!");
 				navigate(`/book/${book.id}`);
 			} else {
@@ -89,12 +79,14 @@ function AddBook() {
 	useEffect(() => {
 		if (book) {
 			setFormData({
+				id: book.id,
 				photoLink: book.photoLink,
 				bookName: book.bookName,
 				author: book.author,
 				genre: book.genre!,
 				description: book.description!,
 				rating: book.rating!,
+				isFavorite: false,
 			});
 		}
 	}, [book]);

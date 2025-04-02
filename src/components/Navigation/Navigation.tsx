@@ -6,27 +6,21 @@ import { useEffect, useState } from "react";
 import { auth, firestore } from "../../firebase/config";
 import { doc, getDoc } from "firebase/firestore";
 import Button from "../Button/Button";
+import { onAuthStateChanged } from "firebase/auth";
 
 function Navigation() {
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 	const [userName, setUserName] = useState<string | null>(null);
+	const [user, setUser] = useState(auth.currentUser);
 
-	async function getUser() {
-		auth.onAuthStateChanged(async (user) => {
-			if (user) {
-				const docRef = doc(firestore, "User", user.uid);
-				const docSnap = await getDoc(docRef);
+	async function getUser(userId: string) {
+		const docRef = doc(firestore, "User", userId);
+		const snapshot = await getDoc(docRef);
 
-				if (docSnap.exists()) {
-					const userData = docSnap.data();
-					setUserName(userData.name);
-				} else {
-					console.error("Пользователь не найден.");
-				}
-			} else {
-				console.error("Пользователь не аутентифицирован.");
-			}
-		});
+		if (!snapshot.exists()) return;
+
+		const userData = snapshot.data();
+		setUserName(userData.name);
 	}
 
 	async function handlerSignout() {
@@ -45,24 +39,29 @@ function Navigation() {
 	}
 
 	useEffect(() => {
-		getUser();
-	}, []);
+		const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+			if (!currentUser) return;
+
+			setUser(currentUser);
+			getUser(currentUser.uid);
+		});
+
+		return () => unsubscribe();
+	}, [user]);
 
 	return (
 		<>
 			<div className={styles["navigation"]}>
 				{userName ? (
-					<Button title="Меню" isPrimary onClick={handlerSignout}>{userName}</Button>
+					<Button title="Меню" isPrimary onClick={handlerSignout}>
+						{userName}
+					</Button>
 				) : (
 					<Link className={styles["auth"]} to="/signin">
 						Войти
 					</Link>
 				)}
-				<Button
-					isSvg
-					onClick={() => setIsModalOpen(!isModalOpen)}
-					isSecond
-				>
+				<Button isSvg onClick={() => setIsModalOpen(!isModalOpen)} isSecond>
 					{isModalOpen === false ? <Menu /> : <X />}
 				</Button>
 			</div>

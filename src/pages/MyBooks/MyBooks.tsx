@@ -49,6 +49,7 @@ function MyBooks() {
 
 	return (
 		<div className={styles["my-books"]}>
+			<h2>Мои книги</h2>
 			<CardBookList booksList={booksList} />
 		</div>
 	);

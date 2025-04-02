@@ -1,5 +1,7 @@
 @use "../../styles/variables" as *;
 
 .favorite {
-	background-color: chartreuse;
+	display: flex;
+	flex-direction: column;
+	gap: $size-xxl
 }
