@@ -3,21 +3,22 @@ import { IBook } from "../CardBookList/CardBookList";
 import styles from "./card-book.module.scss";
 import { Book, BookHeart } from "lucide-react";
 import Button from "../Button/Button";
-import { auth, realtimeDb } from "../../firebase/config";
+import { realtimeDb } from "../../firebase/config";
 import { toast } from "react-toastify";
 import { ref, set } from "firebase/database";
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import { selectUserId } from "../../store/slice/userSlice";
 
 function CardBook(props: IBook) {
 	const [isFavorite, setIsFavorite] = useState(props.isFavorite || false);
-	const user = auth.currentUser;
-	if (!user) return;
+	const userId = useSelector(selectUserId)
 
 	async function handlerFavoriteButton(bookId: string) {
 		try {
 			const favoriteRef = ref(
 				realtimeDb,
-				`user_favorite/${user!.uid}/${bookId}`
+				`user_favorite/${userId}/${bookId}`
 			);
 			await set(favoriteRef, !isFavorite);
 
@@ -47,7 +48,7 @@ function CardBook(props: IBook) {
 				<Link className={styles["link"]} to={`/book/${props.id}`}>
 					Подробнее
 				</Link>
-				{user && (
+				{userId && (
 					<Button
 						title={
 							isFavorite ? "Удалить из избранного" : "Добавить в избранное"

@@ -3,11 +3,13 @@ import styles from "./add-book.module.scss";
 import Input from "../../components/Input/Input";
 import Button from "../../components/Button/Button";
 import { genres, ratings } from "../../const/const";
-import { auth, realtimeDb } from "../../firebase/config";
+import { realtimeDb } from "../../firebase/config";
 import { toast } from "react-toastify";
 import { push, ref, set } from "firebase/database";
 import { useLocation, useNavigate } from "react-router-dom";
 import { IBook } from "../../components/CardBookList/CardBookList";
+import { useSelector } from "react-redux";
+import { selectUserId } from "../../store/slice/userSlice";
 
 const initialState: IBook = {
 	id: "",
@@ -25,12 +27,10 @@ function AddBook() {
 	const { state } = useLocation();
 	const book: IBook = state?.book;
 	const [formData, setFormData] = useState<IBook>(initialState);
+	const userId = useSelector(selectUserId);
 
 	async function handlerFormSubmit(e: FormEvent) {
 		e.preventDefault();
-
-		const user = auth.currentUser;
-		if (!user) return;
 
 		try {
 			if (book) {
@@ -38,10 +38,10 @@ function AddBook() {
 				await set(bookRef, {
 					...formData,
 					id: book.id,
-					userId: user.uid,
+					userId: userId,
 					createdAt: book.createdAt,
 				});
-				await set(ref(realtimeDb, `user_books/${user.uid}/${book.id}`), true); 
+				await set(ref(realtimeDb, `user_books/${userId}/${book.id}`), true); 
 				toast.success("Книга успешно обновлена!");
 				navigate(`/book/${book.id}`);
 			} else {
@@ -50,11 +50,11 @@ function AddBook() {
 				await set(newBookRef, {
 					...formData,
 					id: newBookRef.key,
-					userId: user.uid,
+					userId: userId,
 					createdAt: Date.now(),
 				});
 				await set(
-					ref(realtimeDb, `user_books/${user.uid}/${newBookRef.key}`),
+					ref(realtimeDb, `user_books/${userId}/${newBookRef.key}`),
 					true
 				); 
 				toast.success("Книга успешно добавлена!");

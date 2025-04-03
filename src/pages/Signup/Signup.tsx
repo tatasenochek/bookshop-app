@@ -3,20 +3,22 @@ import styles from "./signup.module.scss";
 import { FormEvent } from "react";
 import Input from "../../components/Input/Input";
 import Button from "../../components/Button/Button";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth, firestore } from "../../firebase/config";
 import { ISignupForm } from "./signup.props";
 import { doc, setDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { ROUTES } from "../../const/const";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../store/slice/userSlice";
 
 function Signup() {
 	const navigate = useNavigate();
+	const dispatch = useDispatch();
 
 	async function handlerSubmitForm(e: FormEvent) {
 		e.preventDefault();
-
-		e.preventDefault();
+		
 		const target = e.target as typeof e.target & ISignupForm;
 		const name = target.name.value;
 		const email = target.email.value;
@@ -25,24 +27,28 @@ function Signup() {
 		try {
 			const res = await createUserWithEmailAndPassword(auth, email, password);
 			const user = res.user;
-			console.log(user);
-			if (user) {
-				await setDoc(doc(firestore, "User", user.uid), {
-					email: user.email,
-					name,
-				});
-			}
-			toast.success("Пользователь успешно зарегистрирован", {
-				position: "top-right",
-				autoClose: 4000,
+
+			await updateProfile(user, {
+				displayName: name,
 			});
+
+			await setDoc(doc(firestore, "User", user.uid), {
+				email: user.email,
+				name,
+			});
+
+			dispatch(setUser({
+				userName: user.displayName,
+				userId: user.uid,
+				userAythStatus: true
+			}));
+
+			toast.success("Пользователь успешно зарегистрирован");
+			console.log(user)
 			navigate(ROUTES.HOME);
 		} catch (error) {
 			console.log(error);
-			toast.error("Ошибка при регистрации пользователя", {
-				position: "top-right",
-				autoClose: 4000,
-			});
+			toast.error("Ошибка при регистрации пользователя");
 		}
 	}
 

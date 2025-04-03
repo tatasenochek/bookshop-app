@@ -2,26 +2,17 @@ import { Link, NavLink } from "react-router-dom";
 import styles from "./navigation.module.scss";
 import clsx from "clsx";
 import { Book, BookHeart, BookPlus, LibraryBig, Menu, X } from "lucide-react";
-import { useEffect, useState } from "react";
-import { auth, firestore } from "../../firebase/config";
-import { doc, getDoc } from "firebase/firestore";
+import { useState } from "react";
+import { auth } from "../../firebase/config";
 import Button from "../Button/Button";
-import { onAuthStateChanged } from "firebase/auth";
+import { useSelector } from "react-redux";
+import { selectUserName, signOut } from "../../store/slice/userSlice";
+import { useDispatch } from "react-redux";
 
 function Navigation() {
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-	const [userName, setUserName] = useState<string | null>(null);
-	const [user, setUser] = useState(auth.currentUser);
-
-	async function getUser(userId: string) {
-		const docRef = doc(firestore, "User", userId);
-		const snapshot = await getDoc(docRef);
-
-		if (!snapshot.exists()) return;
-
-		const userData = snapshot.data();
-		setUserName(userData.name);
-	}
+	const userName = useSelector(selectUserName)
+	const dispatch = useDispatch();
 
 	async function handlerSignout() {
 		const res = confirm("Вы действительно хотите выйти из личного кабинета?");
@@ -29,7 +20,7 @@ function Navigation() {
 		if (res) {
 			try {
 				await auth.signOut();
-				setUserName(null);
+				dispatch(signOut()) ;
 			} catch (error) {
 				console.log(error);
 			}
@@ -37,17 +28,6 @@ function Navigation() {
 
 		return;
 	}
-
-	useEffect(() => {
-		const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-			if (!currentUser) return;
-
-			setUser(currentUser);
-			getUser(currentUser.uid);
-		});
-
-		return () => unsubscribe();
-	}, [user]);
 
 	return (
 		<>

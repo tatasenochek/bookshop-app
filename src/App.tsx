@@ -12,6 +12,10 @@ import RequireAuth from "./components/RequireAuth/RequireAuth";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ROUTES } from "./const/const";
+import { subscribeToAuthChanges } from "./store/slice/userSlice";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "./store/store";
 
 const router = createBrowserRouter(
 	[
@@ -88,6 +92,14 @@ const router = createBrowserRouter(
 );
 
 function App() {
+	const dispatch = useDispatch<AppDispatch>();
+
+	useEffect(() => {
+		const unsubscribe = dispatch(subscribeToAuthChanges());
+		
+		return () => unsubscribe();
+	}, [dispatch]);
+
 	return <RouterProvider router={router}></RouterProvider>;
 }
 

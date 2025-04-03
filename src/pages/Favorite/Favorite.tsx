@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react";
 import styles from "./favorite.module.scss";
 import CardBookList, { IBook } from "../../components/CardBookList/CardBookList";
-import { auth, realtimeDb } from "../../firebase/config";
+import { realtimeDb } from "../../firebase/config";
 import { get, ref } from "firebase/database";
+import { useSelector } from "react-redux";
+import { selectUserId } from "../../store/slice/userSlice";
 
 function Favorite() {
   const [favoriteBooks, setFavoriteBooks] = useState<IBook[]>([]);
-	const user = auth.currentUser;
+	const userId = useSelector(selectUserId);
 
 	 async function getFavoriteBooks() {
-			if (!user) return;
-
 			try {
 				// Получаем список ID избранных книг
-				const favoritesRef = ref(realtimeDb, `user_favorite/${user.uid}`);
+				const favoritesRef = ref(realtimeDb, `user_favorite/${userId}`);
 				const favoritesSnapshot = await get(favoritesRef);
 
 				if (!favoritesSnapshot.exists()) {
@@ -45,7 +45,7 @@ function Favorite() {
 
 		useEffect(() => {
 			getFavoriteBooks();
-		}, [user]);
+		}, []);
 	
 
 	return (
@@ -54,7 +54,7 @@ function Favorite() {
 			{favoriteBooks.length > 0 ? (
 				<CardBookList booksList={favoriteBooks} />
 			) : (
-				<p>У вас пока нет избранных книг</p>
+				<p>У вас пока нет избранных книг 🤷‍♂️</p>
 			)}
 		</div>
 	);

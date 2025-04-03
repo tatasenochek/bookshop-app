@@ -4,12 +4,13 @@ import CardBookList, {
 } from "../../components/CardBookList/CardBookList";
 import styles from "./home.module.scss";
 import { get, ref } from "firebase/database";
-import { auth, realtimeDb } from "../../firebase/config";
+import { realtimeDb } from "../../firebase/config";
+import { useSelector } from "react-redux";
+import { selectUserId } from "../../store/slice/userSlice";
 
 function Home() {
 	const [booksList, setBooksList] = useState<IBook[]>([]);
-
-	const user = auth.currentUser;
+	const userId = useSelector(selectUserId);
 
 	async function getBooks() {
 		try {
@@ -24,8 +25,8 @@ function Home() {
 				id: key,
 			}));
 
-			if (user) {
-				const favoritesRef = ref(realtimeDb, `user_favorite/${user.uid}`);
+			if (userId) {
+				const favoritesRef = ref(realtimeDb, `user_favorite/${userId}`);
 				const favoritesSnapshot = await get(favoritesRef);
 				const favorites = favoritesSnapshot.exists()
 					? favoritesSnapshot.val()
@@ -51,7 +52,7 @@ function Home() {
 
 	useEffect(() => {
 		getBooks();
-	}, [user]);
+	}, []);
 
 	return (
 		<div className={styles["home"]}>

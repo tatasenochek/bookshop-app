@@ -2,16 +2,18 @@ import { useNavigate, useParams } from "react-router-dom";
 import styles from "./book.module.scss";
 import { useEffect, useState } from "react";
 import { get, ref, remove } from "firebase/database";
-import { auth, realtimeDb } from "../../firebase/config";
+import { realtimeDb } from "../../firebase/config";
 import { IBook } from "../../components/CardBookList/CardBookList";
 import { ChevronLeft, Trash2 } from "lucide-react";
-import { onAuthStateChanged } from "firebase/auth";
 import { genres, ratings } from "../../const/const";
 import Button from "../../components/Button/Button";
+import { useSelector } from "react-redux";
+import { selectUserId } from "../../store/slice/userSlice";
 
 function Book() {
 	const { id } = useParams();
 	const navigate = useNavigate();
+	const userId = useSelector(selectUserId);
 
 	const [book, setBook] = useState<IBook | null>(null);
 	const [isOwner, setIsOwner] = useState<boolean>(false);
@@ -46,7 +48,7 @@ function Book() {
 		}
 
 		navigate("/add-book", {
-			state: {book}
+			state: { book },
 		});
 	}
 
@@ -59,17 +61,9 @@ function Book() {
 	}, [id]);
 
 	useEffect(() => {
-		const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-			if (currentUser) {
-				if (currentUser.uid === book?.userId) {
-					setIsOwner(true);
-				}
-			} else {
-				console.log("Пользователь не авторизован");
-			}
-		});
-
-		return () => unsubscribe();
+		if (userId === book?.userId) {
+			setIsOwner(true);
+		}
 	}, [book]);
 
 	return (
@@ -103,8 +97,17 @@ function Book() {
 					</p>
 					{isOwner && (
 						<div className={styles["book-action"]}>
-							<Button isPrimary onClick={handlerEditButton}>Редактировать</Button>
-							<Button title="Удалить книгу" isSecond isSvg onClick={handlerDeleteButton}><Trash2/></Button>
+							<Button isPrimary onClick={handlerEditButton}>
+								Редактировать
+							</Button>
+							<Button
+								title="Удалить книгу"
+								isSecond
+								isSvg
+								onClick={handlerDeleteButton}
+							>
+								<Trash2 />
+							</Button>
 						</div>
 					)}
 				</div>

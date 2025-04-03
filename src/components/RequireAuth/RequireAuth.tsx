@@ -1,21 +1,12 @@
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode } from "react";
 import { Navigate } from "react-router-dom";
-import { auth } from "../../firebase/config";
+import { useSelector } from "react-redux";
+import { selectUserAythStatus } from "../../store/slice/userSlice";
 
 function RequireAuth({ children }: { children: ReactNode }) {
-	const [isUserSignin, setIsUserSignin] = useState<boolean>(true);
+	const userAythStatus = useSelector(selectUserAythStatus)
 
-	useEffect(() => {
-		auth.onAuthStateChanged((user) => {
-			if (user) {
-				setIsUserSignin(true);
-			} else {
-				setIsUserSignin(false);
-			}
-		});
-	}, []);
-
-	if (isUserSignin === false) {
+	if (userAythStatus === false) {
 		return <Navigate to="/signin" replace />;
 	}
 

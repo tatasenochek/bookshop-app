@@ -4,15 +4,16 @@ import CardBookList, {
 } from "../../components/CardBookList/CardBookList";
 import styles from "./my-books.module.scss";
 import { get, onValue, ref } from "firebase/database";
-import { auth, realtimeDb } from "../../firebase/config";
-import { onAuthStateChanged } from "firebase/auth";
+import { realtimeDb } from "../../firebase/config";
+import { selectUserId } from "../../store/slice/userSlice";
+import { useSelector } from "react-redux";
 
 function MyBooks() {
 	const [booksList, setBooksList] = useState<IBook[]>([]);
-	const user = auth.currentUser;
+	const userId = useSelector(selectUserId);
 
-	async function getBooks(user: string) {
-		const bookRef = ref(realtimeDb, `user_books/${user}`);
+	async function getBooks() {
+		const bookRef = ref(realtimeDb, `user_books/${userId}`);
 
 		onValue(bookRef, async (snapshot) => {
 			if (snapshot.exists()) {
@@ -34,18 +35,8 @@ function MyBooks() {
 	}
 
 	useEffect(() => {
-		const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-			if (currentUser) {
-				if (currentUser.uid) {
-					getBooks(currentUser.uid);
-				}
-			} else {
-				console.log("Пользователь не авторизован");
-			}
-		});
-
-		return () => unsubscribe();
-	}, [user]);
+		getBooks();
+	}, []);
 
 	return (
 		<div className={styles["my-books"]}>
