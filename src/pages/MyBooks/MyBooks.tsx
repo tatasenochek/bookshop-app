@@ -1,42 +1,22 @@
-import { useEffect, useState } from "react";
-import CardBookList, {
-	IBook,
-} from "../../components/CardBookList/CardBookList";
+import { useEffect } from "react";
+import CardBookList from "../../components/CardBookList/CardBookList";
 import styles from "./my-books.module.scss";
-import { get, onValue, ref } from "firebase/database";
-import { realtimeDb } from "../../firebase/config";
 import { selectUserId } from "../../store/slice/userSlice";
 import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { getUserBooks } from "../../store/services/bookApi";
+import { selectUserBooks } from "../../store/slice/bookSlice";
+import { AppDispatch } from "../../store/store";
 
 function MyBooks() {
-	const [booksList, setBooksList] = useState<IBook[]>([]);
+	const booksList = useSelector(selectUserBooks);
 	const userId = useSelector(selectUserId);
-
-	async function getBooks() {
-		const bookRef = ref(realtimeDb, `user_books/${userId}`);
-
-		onValue(bookRef, async (snapshot) => {
-			if (snapshot.exists()) {
-				const bookIds = Object.keys(snapshot.val());
-				const booksPromises = bookIds.map((bookId) =>
-					get(ref(realtimeDb, `books/${bookId}`))
-				);
-
-				const booksSnapshots = await Promise.all(booksPromises);
-				const userBooks = booksSnapshots
-					.filter((snap) => snap.exists())
-					.map((snap) => ({
-						...snap.val(),
-						id: snap.key,
-					}));
-				setBooksList(userBooks);
-			}
-		});
-	}
+	const dispatch = useDispatch<AppDispatch>();
 
 	useEffect(() => {
-		getBooks();
-	}, []);
+		if (!userId) return;
+		dispatch(getUserBooks(userId))
+	}, [dispatch, userId]);
 
 	return (
 		<div className={styles["my-books"]}>

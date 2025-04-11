@@ -1,51 +1,23 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import styles from "./favorite.module.scss";
-import CardBookList, { IBook } from "../../components/CardBookList/CardBookList";
-import { realtimeDb } from "../../firebase/config";
-import { get, ref } from "firebase/database";
+import CardBookList from "../../components/CardBookList/CardBookList";
 import { useSelector } from "react-redux";
 import { selectUserId } from "../../store/slice/userSlice";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../store/store";
+import { getUserFavoriteBooks } from "../../store/services/bookApi";
+import { selectFavoriteBooks } from "../../store/slice/bookSlice";
 
 function Favorite() {
-  const [favoriteBooks, setFavoriteBooks] = useState<IBook[]>([]);
+  const favoriteBooks = useSelector(selectFavoriteBooks);
 	const userId = useSelector(selectUserId);
-
-	 async function getFavoriteBooks() {
-			try {
-				// Получаем список ID избранных книг
-				const favoritesRef = ref(realtimeDb, `user_favorite/${userId}`);
-				const favoritesSnapshot = await get(favoritesRef);
-
-				if (!favoritesSnapshot.exists()) {
-					setFavoriteBooks([]);
-					return;
-				}
-
-				const favoriteIds = Object.keys(favoritesSnapshot.val());
-
-				// Получаем данные по каждой избранной книге
-				const booksPromises = favoriteIds.map((bookId) =>
-					get(ref(realtimeDb, `books/${bookId}`))
-				);
-
-				const booksSnapshots = await Promise.all(booksPromises);
-				const favoriteBooksData = booksSnapshots
-					.filter((snap) => snap.exists())
-					.map((snap) => ({
-						...snap.val(),
-						id: snap.key,
-						isFavorite: true,
-					}));
-
-				setFavoriteBooks(favoriteBooksData);
-			} catch (error) {
-				console.error("Ошибка при загрузке избранного:", error);
-			}
-		}
+	const dispatch = useDispatch<AppDispatch>();
 
 		useEffect(() => {
-			getFavoriteBooks();
-		}, []);
+			if (userId) {
+				dispatch(getUserFavoriteBooks(userId));
+			}
+		}, [userId, dispatch]);
 	
 
 	return (

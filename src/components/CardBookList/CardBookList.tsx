@@ -1,5 +1,8 @@
 import styles from "./card-book-list.module.scss";
 import CardBook from "../../components/CardBook/CardBook";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store/store";
+import MyLoader from "../CardBook/Loader";
 
 export interface IBook {
 	author: string;
@@ -11,24 +14,25 @@ export interface IBook {
 	rating?: string;
 	createdAt?: number;
 	userId?: string;
-	isFavorite: boolean;
 }
 
 function CardBookList({ booksList }: { booksList: IBook[] }) {
+	const { status } = useSelector((state: RootState) => state.book);
+	
 	return (
 		<ul className={styles["homecard-book-list"]}>
+			{status === "loading" &&
+				[...new Array(4)].map((_, index) => <MyLoader key={index} />)}
 			{booksList.map((book: IBook) => (
 				<li key={book.id}>
 					<CardBook
-						photoLink={book.photoLink}
-						bookName={book.bookName}
-						author={book.author}
-						id={book.id}
 						userId={book.userId}
-						isFavorite={book.isFavorite}
+						{...book}
 					/>
 				</li>
 			))}
+			{status === "error" &&
+				<p className="error">Произошла ошибка при загрузке данных. Попробуйте позже.</p>}
 		</ul>
 	);
 }

@@ -25,6 +25,7 @@
 
 .menu {
 	position: absolute;
+	z-index: 2;
 	width: 320px;
 	background-color: $color-light;
 	display: flex;

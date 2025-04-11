@@ -30,9 +30,11 @@ export const userSlice = createSlice({
 			state.userId = action.payload.userId;
 			state.userName = action.payload.userName;
 			state.userAythStatus = true;
+			state.isLoading = false;
+			state.error = null;
 		},
-		setLoading: (state) => {
-			state.isLoading = true;
+		setLoading: (state, action: PayloadAction<boolean>) => {
+			state.isLoading = action.payload;
 		},
 		setError: (state, action: PayloadAction<string>) => {
 			state.error = action.payload;
@@ -53,7 +55,7 @@ export const { setUser, signOut, setLoading, setError } = userSlice.actions;
 export const subscribeToAuthChanges =
 	() =>
 	(dispatch: AppDispatch): Unsubscribe => {
-		dispatch(setLoading());
+		dispatch(setLoading(true));
 
 		const unsubscribe = auth.onAuthStateChanged(
 			(user) => {
@@ -71,6 +73,7 @@ export const subscribeToAuthChanges =
 			},
 			(error) => {
 				dispatch(setError(error.message));
+				dispatch(setLoading(false));
 			}
 		);
 

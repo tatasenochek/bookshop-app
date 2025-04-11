@@ -3,13 +3,13 @@ import styles from "./add-book.module.scss";
 import Input from "../../components/Input/Input";
 import Button from "../../components/Button/Button";
 import { genres, ratings } from "../../const/const";
-import { realtimeDb } from "../../firebase/config";
 import { toast } from "react-toastify";
-import { push, ref, set } from "firebase/database";
 import { useLocation, useNavigate } from "react-router-dom";
 import { IBook } from "../../components/CardBookList/CardBookList";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectUserId } from "../../store/slice/userSlice";
+import { addBook, updateBook } from "../../store/services/bookApi";
+import { AppDispatch } from "../../store/store";
 
 const initialState: IBook = {
 	id: "",
@@ -28,35 +28,39 @@ function AddBook() {
 	const book: IBook = state?.book;
 	const [formData, setFormData] = useState<IBook>(initialState);
 	const userId = useSelector(selectUserId);
+	const dispatch = useDispatch<AppDispatch>();
 
 	async function handlerFormSubmit(e: FormEvent) {
 		e.preventDefault();
+		if (!userId) return;
 
 		try {
 			if (book) {
-				const bookRef = ref(realtimeDb, `/books/${book.id}`);
-				await set(bookRef, {
-					...formData,
-					id: book.id,
-					userId: userId,
-					createdAt: book.createdAt,
-				});
-				await set(ref(realtimeDb, `user_books/${userId}/${book.id}`), true); 
+				dispatch(
+					updateBook({
+						book: {
+							...formData,
+							id: book.id,
+							userId,
+							createdAt: book.createdAt,
+						},
+						userId,
+					})
+				);
+
 				toast.success("Книга успешно обновлена!");
 				navigate(`/book/${book.id}`);
 			} else {
-				const bookRef = ref(realtimeDb, "books");
-				const newBookRef = push(bookRef);
-				await set(newBookRef, {
-					...formData,
-					id: newBookRef.key,
-					userId: userId,
-					createdAt: Date.now(),
-				});
-				await set(
-					ref(realtimeDb, `user_books/${userId}/${newBookRef.key}`),
-					true
-				); 
+				dispatch(
+					addBook({
+						book: {
+							...formData,
+							userId: userId,
+						},
+						userId,
+					})
+				);
+
 				toast.success("Книга успешно добавлена!");
 				navigate("/");
 			}
@@ -164,7 +168,9 @@ function AddBook() {
 						))}
 					</select>
 				</label>
-				<Button isPrimary>{book ? "Сохранить изменения" : "Добавить книгу"}</Button>
+				<Button isPrimary>
+					{book ? "Сохранить изменения" : "Добавить книгу"}
+				</Button>
 			</form>
 		</div>
 	);

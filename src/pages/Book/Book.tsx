@@ -1,33 +1,25 @@
 import { useNavigate, useParams } from "react-router-dom";
 import styles from "./book.module.scss";
 import { useEffect, useState } from "react";
-import { get, ref, remove } from "firebase/database";
+import { ref, remove } from "firebase/database";
 import { realtimeDb } from "../../firebase/config";
-import { IBook } from "../../components/CardBookList/CardBookList";
 import { ChevronLeft, Trash2 } from "lucide-react";
 import { genres, ratings } from "../../const/const";
 import Button from "../../components/Button/Button";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectUserId } from "../../store/slice/userSlice";
+import { AppDispatch } from "../../store/store";
+import { selectBookById } from "../../store/slice/bookSlice";
+import { getBookById } from "../../store/services/bookApi";
+import { toast } from "react-toastify";
 
 function Book() {
 	const { id } = useParams();
 	const navigate = useNavigate();
 	const userId = useSelector(selectUserId);
-
-	const [book, setBook] = useState<IBook | null>(null);
+	const dispatch = useDispatch<AppDispatch>();
+	const book = useSelector(selectBookById);
 	const [isOwner, setIsOwner] = useState<boolean>(false);
-
-	async function getBookById(id: string) {
-		const bookRef = ref(realtimeDb, `books/${id}`);
-		const snapshot = await get(bookRef);
-
-		if (!snapshot) {
-			return;
-		}
-
-		setBook(snapshot.val());
-	}
 
 	async function handlerDeleteButton() {
 		const res = confirm("Вы действительно хотите удалить книгу?");
@@ -35,6 +27,7 @@ function Book() {
 		if (res) {
 			const bookRef = ref(realtimeDb, `books/${id}`);
 			await remove(bookRef);
+			toast.success("Книга успешно удалена!");
 			navigate("/");
 		}
 
@@ -53,18 +46,15 @@ function Book() {
 	}
 
 	useEffect(() => {
-		if (id) {
-			getBookById(id);
-		}
-
-		return;
-	}, [id]);
+		if (!id) return;
+		dispatch(getBookById(id));
+	}, [id, dispatch]);
 
 	useEffect(() => {
 		if (userId === book?.userId) {
 			setIsOwner(true);
 		}
-	}, [book]);
+	}, [book, userId]);
 
 	return (
 		<>

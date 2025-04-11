@@ -3,35 +3,25 @@ import { IBook } from "../CardBookList/CardBookList";
 import styles from "./card-book.module.scss";
 import { Book, BookHeart } from "lucide-react";
 import Button from "../Button/Button";
-import { realtimeDb } from "../../firebase/config";
-import { toast } from "react-toastify";
-import { ref, set } from "firebase/database";
-import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectUserId } from "../../store/slice/userSlice";
+import { AppDispatch, RootState } from "../../store/store";
+import { toggleFavoriteBook } from "../../store/services/bookApi";
 
 function CardBook(props: IBook) {
-	const [isFavorite, setIsFavorite] = useState(props.isFavorite || false);
-	const userId = useSelector(selectUserId)
-
-	async function handlerFavoriteButton(bookId: string) {
-		try {
-			const favoriteRef = ref(
-				realtimeDb,
-				`user_favorite/${userId}/${bookId}`
-			);
-			await set(favoriteRef, !isFavorite);
-
-			toast.success(
-				!isFavorite
-					? "Книга добавлена в избранное"
-					: "Книга удалена из избранного"
-			);
-			setIsFavorite(!isFavorite);
-		} catch (error) {
-			console.error("Ошибка при добавлении в избранное:", error);
-			toast.error("Ошибка при добавлении в избранное");
-		}
+	const userId = useSelector(selectUserId);
+	const bookId = props.id;
+	const isFavorite = useSelector((state: RootState) => state.book.favoriteBooksId.includes(bookId));
+	const dispatch = useDispatch<AppDispatch>();
+ 
+	async function handlerFavoriteButton() {
+		if (!userId) return;
+		dispatch(
+			toggleFavoriteBook({
+				bookId,
+				userId,
+			})
+		);
 	}
 
 	return (
@@ -51,12 +41,14 @@ function CardBook(props: IBook) {
 				{userId && (
 					<Button
 						title={
-							isFavorite ? "Удалить из избранного" : "Добавить в избранное"
+							isFavorite
+								? "Удалить из избранного"
+								: "Добавить в избранное"
 						}
 						isSecond
 						isSvg
 						isFavorite={isFavorite}
-						onClick={() => handlerFavoriteButton(props.id)}
+						onClick={handlerFavoriteButton}
 					>
 						{isFavorite ? <BookHeart /> : <Book />}
 					</Button>
