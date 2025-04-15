@@ -1,6 +1,5 @@
 import styles from "./header.module.scss";
 import logo from "../../assets/books.png";
-import Search from "../Search/Search";
 import Navigation from "../Navigation/Navigation";
 import { Link } from "react-router-dom";
 
@@ -17,7 +16,6 @@ function Header() {
 					<h1 className={styles["title"]}>Книжная лавка </h1>
 				</div>
 			</Link>
-			<Search />
 			<Navigation />
 		</header>
 	);

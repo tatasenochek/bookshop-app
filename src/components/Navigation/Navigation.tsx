@@ -1,7 +1,7 @@
 import { Link, NavLink } from "react-router-dom";
 import styles from "./navigation.module.scss";
 import clsx from "clsx";
-import { Book, BookHeart, BookPlus, LibraryBig, Menu, X } from "lucide-react";
+import { Book, BookPlus, LibraryBig, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { auth } from "../../firebase/config";
 import Button from "../Button/Button";
@@ -78,16 +78,6 @@ function Navigation() {
 					>
 						<Book size={18} />
 						Мои книги
-					</NavLink>
-					<NavLink
-						onClick={() => setIsModalOpen(!isModalOpen)}
-						className={({ isActive }) =>
-							clsx(styles["link"], isActive && styles["active"])
-						}
-						to="/favorite"
-					>
-						<BookHeart size={18} />
-						Избранное
 					</NavLink>
 				</nav>
 			)}

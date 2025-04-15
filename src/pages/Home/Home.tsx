@@ -17,7 +17,7 @@ function Home() {
 
 	return (
 		<div className={styles["home"]}>
-			<CardBookList booksList={booksList}/>
+			<CardBookList booksList={booksList} />
 		</div>
 	);
 }

@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { IBook } from "../../components/CardBookList/CardBookList";
-import { get, push, ref, remove, set } from "firebase/database";
+import { get, push, ref, set } from "firebase/database";
 import { realtimeDb } from "../../firebase/config";
 
 export const addBook = createAsyncThunk<IBook, { book: IBook; userId: string }>(
@@ -38,22 +38,6 @@ export const updateBook = createAsyncThunk<
 	return updateBook;
 });
 
-export const toggleFavoriteBook = createAsyncThunk<
-	{ bookId: string; isFavorite: boolean },
-	{ bookId: string; userId: string }
->("books/toggleFavoriteBook", async ({ bookId, userId }) => {
-	const favoriteRef = ref(realtimeDb, `user_favorite/${userId}/${bookId}`);
-	const snapshot = await get(favoriteRef);
-
-	if (snapshot.exists()) {
-		await remove(favoriteRef);
-		return { bookId, isFavorite: false };
-	} else {
-		await set(favoriteRef, true);
-		return { bookId, isFavorite: true };
-	}
-});
-
 export const getAllBooks = createAsyncThunk<IBook[]>(
 	"books/getAllBooks",
 	async () => {
@@ -86,24 +70,6 @@ export const getUserBooks = createAsyncThunk<IBook[], string>(
 		});
 
 		return await Promise.all(booksPromises);
-	}
-);
-
-export const getUserFavoriteBooks = createAsyncThunk<IBook[], string>(
-	"books/getUserFavoriteBooks",
-	async (userId) => {
-		const snapshot = await get(ref(realtimeDb, `user_favorite/${userId}`));
-		const favoriteIds = snapshot.exists() ? Object.keys(snapshot.val()) : [];
-
-		const booksPromises = favoriteIds.map(async (bookId) => {
-			const bookRef = ref(realtimeDb, `books/${bookId}`);
-			const bookSnapshot = await get(bookRef);
-			return bookSnapshot.exists() ? bookSnapshot.val() : null;
-    });
-    
-		const books = await Promise.all(booksPromises);
-		
-    return books.filter((book) => book !== null) as IBook[];
 	}
 );
 

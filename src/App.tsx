@@ -3,7 +3,6 @@ import { LayoutMain } from "./layout/LayoutMain";
 import Home from "./pages/Home/Home";
 import AddBook from "./pages/AddBook/AddBook";
 import MyBooks from "./pages/MyBooks/MyBooks";
-import Favorite from "./pages/Favorite/Favorite";
 import NotFound from "./pages/NotFound/NotFound";
 import Book from "./pages/Book/Book";
 import Signin from "./pages/Signin/Signin";
@@ -56,14 +55,6 @@ const router = createBrowserRouter(
 					element: (
 						<RequireAuth>
 							<MyBooks />
-						</RequireAuth>
-					),
-				},
-				{
-					path: ROUTES.FAVORITE,
-					element: (
-						<RequireAuth>
-							<Favorite />
 						</RequireAuth>
 					),
 				},

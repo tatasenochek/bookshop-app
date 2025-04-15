@@ -3,12 +3,10 @@ import { RootState } from "../store";
 import { IBook } from "../../components/CardBookList/CardBookList";
 import {
 	addBook,
-	toggleFavoriteBook,
 	getAllBooks,
 	getBookById,
 	getUserBooks,
 	updateBook,
-  getUserFavoriteBooks,
 } from "../services/bookApi";
 
 enum Status {
@@ -22,8 +20,6 @@ interface IBookState {
 	currentBook: IBook | null;
 	allBooks: IBook[];
 	userBooks: IBook[];
-	favoriteBooks: IBook[];
-	favoriteBooksId: string[];
 	status: Status;
 	isFavorite: boolean;
 }
@@ -32,8 +28,6 @@ const initialState: IBookState = {
 	allBooks: [],
 	currentBook: null,
 	userBooks: [],
-  favoriteBooks: [],
-  favoriteBooksId: [],
 	status: Status.IDLE,
 	isFavorite: false,
 };
@@ -70,36 +64,6 @@ export const bookSlice = createSlice({
 				);
 			})
 			.addCase(updateBook.rejected, (state) => {
-				state.status = Status.ERROR;
-			})
-			// // toggleFavoriteBook - добавление в избранное
-			.addCase(toggleFavoriteBook.pending, (state) => {
-				state.status = Status.LOADING;
-			})
-			.addCase(
-				toggleFavoriteBook.fulfilled,
-				(
-					state,
-					action: PayloadAction<{ bookId: string; isFavorite: boolean }>
-				) => {
-					state.status = Status.SUCCESS;
-
-					if (action.payload.isFavorite) {
-						if (!state.favoriteBooksId.includes(action.payload.bookId)) {
-							state.favoriteBooksId.push(action.payload.bookId);
-						}
-					} else {
-						state.favoriteBooksId = state.favoriteBooksId.filter(
-							(id) => id !== action.payload.bookId
-						);
-          }
-          state.favoriteBooks = state.favoriteBooks.filter(
-						(book) =>
-							book.id !== action.payload.bookId || action.payload.isFavorite
-					);
-				}
-			)
-			.addCase(toggleFavoriteBook.rejected, (state) => {
 				state.status = Status.ERROR;
 			})
 			// getAllBooks - получить все книги
@@ -149,22 +113,6 @@ export const bookSlice = createSlice({
 				state.status = Status.ERROR;
 				state.userBooks = [];
 			})
-			// getUserFavoriteBooks - получить все книги пользователя
-			.addCase(getUserFavoriteBooks.pending, (state) => {
-				state.status = Status.LOADING;
-			})
-			.addCase(
-				getUserFavoriteBooks.fulfilled,
-				(state, action: PayloadAction<IBook[]>) => {
-					state.status = Status.SUCCESS;
-          state.favoriteBooks = action.payload;
-          state.favoriteBooksId = action.payload.map((book) => book.id);
-				}
-			)
-			.addCase(getUserFavoriteBooks.rejected, (state) => {
-				state.status = Status.ERROR;
-				state.favoriteBooks = [];
-			});
 	},
 });
 
@@ -172,8 +120,3 @@ export default bookSlice.reducer;
 export const selectAllBooks = (state: RootState) => state.book.allBooks;
 export const selectBookById = (state: RootState) => state.book.currentBook;
 export const selectUserBooks = (state: RootState) => state.book.userBooks;
-export const selectFavoriteBooks = (state: RootState) =>
-  state.book.favoriteBooks;
-export const selectFavoriteBookIds = (state: RootState) =>
-	state.book.favoriteBooksId;
-
