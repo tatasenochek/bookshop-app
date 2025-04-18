@@ -23,10 +23,7 @@ const navigate = useNavigate();
 			navigate(ROUTES.HOME);
 		} catch (error) {
 			console.log(error);
-			toast.error("Ошибка при регистрации пользователя", {
-				position: "top-right",
-				autoClose: 4000,
-			});
+			toast.error("Ошибка при регистрации пользователя");
 		}
 	}
 

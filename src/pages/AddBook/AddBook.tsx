@@ -19,7 +19,6 @@ const initialState: IBook = {
 	genre: "",
 	description: "",
 	rating: "",
-	isFavorite: false,
 };
 
 function AddBook() {
@@ -90,7 +89,6 @@ function AddBook() {
 				genre: book.genre!,
 				description: book.description!,
 				rating: book.rating!,
-				isFavorite: false,
 			});
 		}
 	}, [book]);

@@ -3,31 +3,15 @@ import styles from "./navigation.module.scss";
 import clsx from "clsx";
 import { Book, BookPlus, LibraryBig, Menu, X } from "lucide-react";
 import { useState } from "react";
-import { auth } from "../../firebase/config";
 import Button from "../Button/Button";
 import { useSelector } from "react-redux";
-import { selectUserName, signOut } from "../../store/slice/userSlice";
-import { useDispatch } from "react-redux";
+import { selectUserName } from "../../store/slice/userSlice";
+import { useAuthActions } from "../../hooks/useAuthActions";
 
 function Navigation() {
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-	const userName = useSelector(selectUserName)
-	const dispatch = useDispatch();
-
-	async function handlerSignout() {
-		const res = confirm("Вы действительно хотите выйти из личного кабинета?");
-
-		if (res) {
-			try {
-				await auth.signOut();
-				dispatch(signOut()) ;
-			} catch (error) {
-				console.log(error);
-			}
-		}
-
-		return;
-	}
+	const userName = useSelector(selectUserName);
+	const { handlerSignout } = useAuthActions();
 
 	return (
 		<>
