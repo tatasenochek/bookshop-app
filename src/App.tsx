@@ -4,41 +4,26 @@ import Home from "./pages/Home/Home";
 import RequireAuth from "./components/RequireAuth/RequireAuth";
 import "react-toastify/dist/ReactToastify.css";
 import { ROUTES } from "./const/const";
-import { subscribeToAuthChanges } from "./store/slice/userSlice";
-import { lazy, Suspense, useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "./store/store";
-
-const Signin = lazy(() => import("./pages/Signin/Signin"));
-const Signup = lazy(() => import("./pages/Signup/Signup"));
-const AddBook = lazy(() => import("./pages/AddBook/AddBook"));
-const MyBooks = lazy(() => import("./pages/MyBooks/MyBooks"));
-const Book = lazy(() => import("./pages/Book/Book"));
-const NotFound = lazy(() => import("./pages/NotFound/NotFound"));
-const ToastContainer = lazy(() =>
-	import("react-toastify").then((module) => ({
-		default: module.ToastContainer,
-	}))
-);
+import { Suspense } from "react";
+import { useAuth } from "./hooks/useAuth";
+import {
+	AddBook,
+	Book,
+	MyBooks,
+	NotFound,
+	Signin,
+	Signup,
+} from "./routes/LazyComponents";
 
 const router = createBrowserRouter(
 	[
 		{
 			path: ROUTES.HOME,
-			element: (
-				<>
-					<LayoutMain />
-					<ToastContainer position="top-right" autoClose={3000} theme="light" />
-				</>
-			),
+			element: <LayoutMain />,
 			children: [
 				{
 					path: ROUTES.HOME,
-					element: (
-						<Suspense fallback={<>Загружаем данные о книгах...</>}>
-							<Home />
-						</Suspense>
-					),
+					element: <Home />,
 				},
 				{
 					path: ROUTES.ADD_BOOK,
@@ -97,18 +82,7 @@ const router = createBrowserRouter(
 );
 
 function App() {
-	const dispatch = useDispatch<AppDispatch>();
-
-	useEffect(() => {
-		const unsubscribe = dispatch(subscribeToAuthChanges());
-
-		return () => unsubscribe();
-	}, [dispatch]);
-
-	useEffect(() => {
-		import("./firebase/config");
-	}, []);
-
+	useAuth();
 
 	return <RouterProvider router={router}></RouterProvider>;
 }
