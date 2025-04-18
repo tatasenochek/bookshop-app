@@ -1,85 +1,43 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { IBook } from "../../components/CardBookList/CardBookList";
-import { get, push, ref, set } from "firebase/database";
-import { realtimeDb } from "../../firebase/config";
+import { RealtimeDbService } from "./realtimeDbService";
 
 export const addBook = createAsyncThunk<IBook, { book: IBook; userId: string }>(
 	"books/addBook",
-	async ({ book, userId }) => {
-		const bookRef = push(ref(realtimeDb, "books"));
-		const newBook: IBook = {
-			...book,
-			id: bookRef.key,
-			userId,
-			createdAt: Date.now(),
-		};
-
-		await Promise.all([
-			set(bookRef, newBook),
-			set(ref(realtimeDb, `user_books/${userId}/${bookRef.key}`), true),
-		]);
-
-		return newBook;
-	}
+	async ({ book, userId }) => RealtimeDbService.addBook(book, userId)
 );
+
+export const deleteBook = createAsyncThunk<
+	string,
+	{ bookId: string; userId: string }
+>("books/deleteBook", async ({ bookId, userId }) => {
+	await RealtimeDbService.deleteBook(bookId, userId);
+	return bookId;
+});
 
 export const updateBook = createAsyncThunk<
 	IBook,
 	{ book: IBook; userId: string }
 >("books/updateBook", async ({ book, userId }) => {
-	const updateBook: IBook = {
-		...book,
-		id: book.id,
-		userId,
-		createdAt: book.createdAt,
-	};
-
-	await set(ref(realtimeDb, `/books/${book.id}`), updateBook);
+	const updateBook = await RealtimeDbService.updateBook(book, userId);
 	return updateBook;
 });
 
 export const getAllBooks = createAsyncThunk<IBook[]>(
 	"books/getAllBooks",
-	async () => {
-		const snapshot = await get(ref(realtimeDb, "books"));
-
-		if (!snapshot.exists()) return [];
-
-		return Object.keys(snapshot.val()).map((key) => ({
-			...snapshot.val()[key],
-			id: key,
-		}));
-	}
+	async () => RealtimeDbService.getAllBooks()
 );
 
 export const getUserBooks = createAsyncThunk<IBook[], string>(
 	"books/getUserBooks",
-	async (userId) => {
-		const snapshot = await get(ref(realtimeDb, `user_books/${userId}`));
-
-		if (!snapshot.exists()) return [];
-
-		const userBookIds = Object.keys(snapshot.val());
-
-		const booksPromises = userBookIds.map(async (bookId) => {
-			const bookSnapshot = await get(ref(realtimeDb, `books/${bookId}`));
-			return {
-				id: bookId,
-				...(bookSnapshot.val() as Omit<IBook, "id">),
-			};
-		});
-
-		return await Promise.all(booksPromises);
-	}
+	async (userId) => RealtimeDbService.getUserBooks(userId)
 );
 
 export const getBookById = createAsyncThunk<
 	IBook | undefined,
 	string | undefined
 >("books/getBookById", async (bookId) => {
-	const snapshot = await get(ref(realtimeDb, `books/${bookId}`));
+	if (!bookId) return;
 
-	if (!snapshot.exists()) return;
-
-	return snapshot.val();
+	return await RealtimeDbService.getBookById(bookId);
 });

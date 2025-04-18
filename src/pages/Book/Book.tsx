@@ -1,8 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import styles from "./book.module.scss";
 import { useEffect, useState } from "react";
-import { ref, remove } from "firebase/database";
-import { realtimeDb } from "../../firebase/config";
 import { ChevronLeft, Trash2 } from "lucide-react";
 import { genres, ratings } from "../../const/const";
 import Button from "../../components/Button/Button";
@@ -10,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectUserId } from "../../store/slice/userSlice";
 import { AppDispatch } from "../../store/store";
 import { selectBookById } from "../../store/slice/bookSlice";
-import { getBookById } from "../../store/services/bookApi";
+import { deleteBook, getBookById } from "../../store/services/bookApi";
 import { toast } from "react-toastify";
 
 function Book() {
@@ -25,8 +23,7 @@ function Book() {
 		const res = confirm("Вы действительно хотите удалить книгу?");
 
 		if (res) {
-			const bookRef = ref(realtimeDb, `books/${id}`);
-			await remove(bookRef);
+			await dispatch(deleteBook({ bookId: id!, userId: userId! }));
 			toast.success("Книга успешно удалена!");
 			navigate("/");
 		}

@@ -10,16 +10,12 @@ export default defineConfig({
 			output: {
 				manualChunks: {
 					toastify: ["react-toastify"],
-					firebase: [
-						"firebase/app",
-						"firebase/auth",
-						"firebase/firestore",
-						"firebase/database",
-					],
+					firebaseAuth: ["firebase/auth"],
+					firebase: ["firebase/app", "firebase/firestore", "firebase/database"],
 					react: ["react", "react-dom", "react-router-dom"],
 					lucide: ["lucide-react"],
 					redux: ["@reduxjs/toolkit", "react-redux"],
-					clsx: ["clsx"]
+					clsx: ["clsx"],
 				},
 			},
 		},

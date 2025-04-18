@@ -4,9 +4,8 @@ import { FormEvent } from "react";
 import Input from "../../components/Input/Input";
 import Button from "../../components/Button/Button";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { auth, firestore } from "../../firebase/config";
+import { auth } from "../../firebase/config";
 import { ISignupForm } from "./signup.props";
-import { doc, setDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { ROUTES } from "../../const/const";
 import { useDispatch } from "react-redux";
@@ -32,19 +31,26 @@ function Signup() {
 				displayName: name,
 			});
 
+			const { getFirestore, doc, setDoc } = await import(
+				"firebase/firestore/lite"
+			);
+			const firestore = getFirestore();
+
 			await setDoc(doc(firestore, "User", user.uid), {
 				email: user.email,
 				name,
 			});
 
-			dispatch(setUser({
-				userName: user.displayName,
-				userId: user.uid,
-				userAythStatus: true
-			}));
+			dispatch(
+				setUser({
+					userName: user.displayName,
+					userId: user.uid,
+					userAythStatus: true,
+				})
+			);
 
 			toast.success("Пользователь успешно зарегистрирован");
-			console.log(user)
+			console.log(user);
 			navigate(ROUTES.HOME);
 		} catch (error) {
 			console.log(error);

@@ -3,6 +3,7 @@ import { RootState } from "../store";
 import { IBook } from "../../components/CardBookList/CardBookList";
 import {
 	addBook,
+	deleteBook,
 	getAllBooks,
 	getBookById,
 	getUserBooks,
@@ -50,6 +51,23 @@ export const bookSlice = createSlice({
 			.addCase(addBook.rejected, (state) => {
 				state.status = Status.ERROR;
 			})
+			// deleteBook - удаление книги
+			.addCase(deleteBook.pending, (state) => {
+				state.status = Status.LOADING;
+			})
+			.addCase(deleteBook.fulfilled, (state, action: PayloadAction<string>) => {
+				state.status = Status.SUCCESS;
+				state.allBooks = state.allBooks.filter(
+					(book) => book.id !== action.payload
+				);
+				state.userBooks = state.userBooks.filter(
+					(book) => book.id !== action.payload
+				);
+			})
+			.addCase(deleteBook.rejected, (state) => {
+				state.status = Status.ERROR;
+			})
+
 			// updateBook - редактирование книги
 			.addCase(updateBook.pending, (state) => {
 				state.status = Status.LOADING;
@@ -112,7 +130,7 @@ export const bookSlice = createSlice({
 			.addCase(getUserBooks.rejected, (state) => {
 				state.status = Status.ERROR;
 				state.userBooks = [];
-			})
+			});
 	},
 });
 
