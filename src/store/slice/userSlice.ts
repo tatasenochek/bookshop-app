@@ -6,7 +6,7 @@ import { Unsubscribe } from "firebase/auth";
 interface IUser {
 	userName: string | null;
 	userId: string | null;
-	userAythStatus: boolean;
+	userAuthStatus: boolean;
 }
 
 interface IUserState extends IUser {
@@ -17,7 +17,7 @@ interface IUserState extends IUser {
 const initialState: IUserState = {
 	userName: null,
 	userId: null,
-	userAythStatus: false,
+	userAuthStatus: false,
 	isLoading: false,
 	error: null,
 };
@@ -29,7 +29,7 @@ export const userSlice = createSlice({
 		setUser: (state, action: PayloadAction<IUser>) => {
 			state.userId = action.payload.userId;
 			state.userName = action.payload.userName;
-			state.userAythStatus = true;
+			state.userAuthStatus = true;
 			state.isLoading = false;
 			state.error = null;
 		},
@@ -43,7 +43,7 @@ export const userSlice = createSlice({
 		signOut: (state) => {
 			state.userId = null;
 			state.userName = null;
-			state.userAythStatus = false;
+			state.userAuthStatus = false;
 			state.isLoading = false;
 			state.error = null;
 		},
@@ -64,7 +64,7 @@ export const subscribeToAuthChanges =
 						setUser({
 							userName: user.displayName,
 							userId: user.uid,
-							userAythStatus: true,
+							userAuthStatus: true,
 						})
 					);
 				} else {
@@ -83,4 +83,4 @@ export const subscribeToAuthChanges =
 export default userSlice.reducer;
 export const selectUserName = (state: RootState) => state.user.userName;
 export const selectUserId = (state: RootState) => state.user.userId;
-export const selectUserAythStatus = (state: RootState) => state.user.userAythStatus;
+export const selectUserAuthStatus = (state: RootState) => state.user.userAuthStatus;

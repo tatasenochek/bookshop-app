@@ -9,6 +9,7 @@ function CardBook(props: IBook) {
 				className={styles["image"]}
 				src={props.photoLink}
 				alt={props.bookName}
+				loading="lazy"
 			/>
 			<h3 className={styles["title"]}>{props.bookName}</h3>
 			<p className={styles["author"]}>{props.author}</p>

@@ -12,6 +12,7 @@ function Header() {
 						className={styles["image"]}
 						src={logo}
 						alt="логотип книжной лавки"
+						loading="lazy"
 					/>
 					<h1 className={styles["title"]}>Книжная лавка </h1>
 				</div>

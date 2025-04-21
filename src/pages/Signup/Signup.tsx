@@ -45,7 +45,7 @@ function Signup() {
 				setUser({
 					userName: user.displayName,
 					userId: user.uid,
-					userAythStatus: true,
+					userAuthStatus: true,
 				})
 			);
 

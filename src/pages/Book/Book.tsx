@@ -63,6 +63,7 @@ function Book() {
 					className={styles["image"]}
 					src={book?.photoLink}
 					alt={book?.bookName}
+					loading="lazy"
 				/>
 				<div className={styles["book-info"]}>
 					<h2>{book?.bookName}</h2>
