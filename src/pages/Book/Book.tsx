@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import styles from "./book.module.scss";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { ChevronLeft, Trash2 } from "lucide-react";
 import { genres, ratings } from "../../const/const";
 import Button from "../../components/Button/Button";
@@ -17,7 +17,7 @@ function Book() {
 	const userId = useSelector(selectUserId);
 	const dispatch = useDispatch<AppDispatch>();
 	const book = useSelector(selectBookById);
-	const [isOwner, setIsOwner] = useState<boolean>(false);
+	const isOwner = userId === book?.userId;
 
 	async function handlerDeleteButton() {
 		const res = confirm("Вы действительно хотите удалить книгу?");
@@ -46,12 +46,6 @@ function Book() {
 		if (!id) return;
 		dispatch(getBookById(id));
 	}, [id, dispatch]);
-
-	useEffect(() => {
-		if (userId === book?.userId) {
-			setIsOwner(true);
-		}
-	}, [book, userId]);
 
 	return (
 		<>

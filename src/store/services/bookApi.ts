@@ -28,7 +28,7 @@ export const getAllBooks = createAsyncThunk<IBook[]>(
 	async () => RealtimeDbService.getAllBooks()
 );
 
-export const getUserBooks = createAsyncThunk<IBook[], string>(
+export const getUserBooks = createAsyncThunk<string[], string>(
 	"books/getUserBooks",
 	async (userId) => RealtimeDbService.getUserBooks(userId)
 );

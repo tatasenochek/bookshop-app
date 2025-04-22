@@ -7,7 +7,6 @@ import { ROUTES } from "./const/const";
 import { Suspense } from "react";
 import { useAuth } from "./hooks/useAuth";
 import { lazy } from "react";
-
 export const Signin = lazy(() => import("./pages/Signin/Signin"));
 export const Signup = lazy(() => import("./pages/Signup/Signup"));
 export const AddBook = lazy(() => import("./pages/AddBook/AddBook"));

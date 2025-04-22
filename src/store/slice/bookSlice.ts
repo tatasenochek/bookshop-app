@@ -21,6 +21,7 @@ interface IBookState {
 	currentBook: IBook | null;
 	allBooks: IBook[];
 	userBooks: IBook[];
+	userBookIds: string[];
 	status: Status;
 	isFavorite: boolean;
 }
@@ -29,6 +30,7 @@ const initialState: IBookState = {
 	allBooks: [],
 	currentBook: null,
 	userBooks: [],
+	userBookIds: [],
 	status: Status.IDLE,
 	isFavorite: false,
 };
@@ -93,6 +95,9 @@ export const bookSlice = createSlice({
 				(state, action: PayloadAction<IBook[]>) => {
 					state.status = Status.SUCCESS;
 					state.allBooks = action.payload;
+					state.userBooks = action.payload.filter((book) =>
+						state.userBookIds.includes(book.id)
+					);
 				}
 			)
 			.addCase(getAllBooks.rejected, (state) => {
@@ -122,14 +127,16 @@ export const bookSlice = createSlice({
 			})
 			.addCase(
 				getUserBooks.fulfilled,
-				(state, action: PayloadAction<IBook[]>) => {
+				(state, action: PayloadAction<string[]>) => {
 					state.status = Status.SUCCESS;
-					state.userBooks = action.payload;
+					state.userBookIds = action.payload;
+					state.userBooks = state.allBooks.filter(b => action.payload.includes(b.id))
 				}
 			)
 			.addCase(getUserBooks.rejected, (state) => {
 				state.status = Status.ERROR;
 				state.userBooks = [];
+				state.userBookIds = [];
 			});
 	},
 });
@@ -138,3 +145,4 @@ export default bookSlice.reducer;
 export const selectAllBooks = (state: RootState) => state.book.allBooks;
 export const selectBookById = (state: RootState) => state.book.currentBook;
 export const selectUserBooks = (state: RootState) => state.book.userBooks;
+export const selectUserBookIds = (state: RootState) => state.book.userBookIds;

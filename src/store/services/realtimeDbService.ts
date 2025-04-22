@@ -78,24 +78,11 @@ export const RealtimeDbService = {
 	},
 
 	// Получение книг которые добавил пользователь
-	async getUserBooks(userId: string): Promise<IBook[]> {
+	async getUserBooks(userId: string): Promise<string[]> {
 		const db = await this.getDb();
 		const { get, ref } = await import("firebase/database");
 
 		const snapshot = await get(ref(db, `user_books/${userId}`));
-
-		if (!snapshot.exists()) return [];
-
-		const userBookIds = Object.keys(snapshot.val());
-
-		const booksPromises = userBookIds.map(async (bookId) => {
-			const bookSnapshot = await get(ref(db, `books/${bookId}`));
-			return {
-				id: bookId,
-				...(bookSnapshot.val() as Omit<IBook, "id">),
-			};
-		});
-
-		return await Promise.all(booksPromises);
+		return snapshot.exists() ? Object.keys(snapshot.val()) : [];
 	},
 };
