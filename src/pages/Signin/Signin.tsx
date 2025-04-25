@@ -1,6 +1,6 @@
 import { FormEvent } from "react";
 import styles from "./signin.module.scss";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Input from "../../components/Input/Input";
 import Button from "../../components/Button/Button";
 import { signInWithEmailAndPassword } from "firebase/auth";
@@ -10,7 +10,8 @@ import { toast } from "react-toastify";
 import { ROUTES } from "../../const/const";
 
 function Signin() {
-const navigate = useNavigate();
+	const navigate = useNavigate();
+	const location = useLocation();
 
 	async function handlerSubmitForm(e: FormEvent) {
 		e.preventDefault();
@@ -49,7 +50,11 @@ const navigate = useNavigate();
 			</form>
 			<div className={styles["action"]}>
 				<span className={styles["text"]}>Есть акканут?</span>
-				<Link className={styles["link"]} to="/signup">
+				<Link
+					className={styles["link"]}
+					state={{ backgroundPath: location }}
+					to={`${ROUTES.SIGNUP}`}
+				>
 					Зарегистрироваться
 				</Link>
 			</div>

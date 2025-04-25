@@ -1,17 +1,19 @@
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import styles from "./navigation.module.scss";
 import clsx from "clsx";
-import { Book, BookPlus, LibraryBig, Menu, X } from "lucide-react";
+import { BookPlus, LibraryBig, Menu, X } from "lucide-react";
 import { useState } from "react";
 import Button from "../Button/Button";
 import { useSelector } from "react-redux";
 import { selectUserName } from "../../store/slice/userSlice";
 import { useAuthActions } from "../../hooks/useAuthActions";
+import { ROUTES } from "../../const/const";
 
 function Navigation() {
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 	const userName = useSelector(selectUserName);
 	const { handlerSignout } = useAuthActions();
+	const location = useLocation();
 
 	return (
 		<>
@@ -21,7 +23,11 @@ function Navigation() {
 						{userName}
 					</Button>
 				) : (
-					<Link className={styles["auth"]} to="/signin">
+					<Link
+						className={styles["auth"]}
+						state={{ backgroundPath: location }}
+						to={`${ROUTES.SIGNIN}`}
+					>
 						Войти
 					</Link>
 				)}
@@ -36,7 +42,7 @@ function Navigation() {
 						className={({ isActive }) =>
 							clsx(styles["link"], isActive && styles["active"])
 						}
-						to="/"
+						to={`${ROUTES.HOME}`}
 						end
 					>
 						<LibraryBig size={18} />
@@ -47,21 +53,12 @@ function Navigation() {
 						className={({ isActive }) =>
 							clsx(styles["link"], isActive && styles["active"])
 						}
-						to="/add-book"
+						to={`${ROUTES.ADD_BOOK}`}
+						state={{ backgroundPath: location }}
 						end
 					>
 						<BookPlus size={18} />
 						Добавить книгу
-					</NavLink>
-					<NavLink
-						onClick={() => setIsModalOpen(!isModalOpen)}
-						className={({ isActive }) =>
-							clsx(styles["link"], isActive && styles["active"])
-						}
-						to="/my-books"
-					>
-						<Book size={18} />
-						Мои книги
 					</NavLink>
 				</nav>
 			)}

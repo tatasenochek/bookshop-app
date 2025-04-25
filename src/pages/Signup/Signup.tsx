@@ -50,7 +50,6 @@ function Signup() {
 			);
 
 			toast.success("Пользователь успешно зарегистрирован");
-			console.log(user);
 			navigate(ROUTES.HOME);
 		} catch (error) {
 			console.log(error);
@@ -81,7 +80,7 @@ function Signup() {
 			</form>
 			<div className={styles["action"]}>
 				<span className={styles["text"]}>Есть акканут?</span>
-				<Link className={styles["link"]} to="/signin">
+				<Link className={styles["link"]} to={`${ROUTES.SIGNIN}`}>
 					Войти
 				</Link>
 			</div>

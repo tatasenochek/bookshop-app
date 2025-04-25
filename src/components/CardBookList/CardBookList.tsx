@@ -2,7 +2,6 @@ import styles from "./card-book-list.module.scss";
 import CardBook from "../../components/CardBook/CardBook";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
-import MyLoader from "../CardBook/Loader";
 
 export interface IBook {
 	author: string;
@@ -10,7 +9,6 @@ export interface IBook {
 	description?: string;
 	genre?: string;
 	id: string;
-	photoLink: string;
 	rating?: string;
 	createdAt?: number;
 	userId?: string;
@@ -21,8 +19,6 @@ function CardBookList({ booksList }: { booksList: IBook[] }) {
 	
 	return (
 		<ul className={styles["homecard-book-list"]}>
-			{status === "loading" &&
-				[...new Array(4)].map((_, index) => <MyLoader key={index} />)}
 			{booksList.map((book: IBook) => (
 				<li key={book.id}>
 					<CardBook

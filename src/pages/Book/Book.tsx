@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom";
 import styles from "./book.module.scss";
 import { useEffect } from "react";
-import { ChevronLeft, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import { genres, ratings } from "../../const/const";
 import Button from "../../components/Button/Button";
 import { useDispatch, useSelector } from "react-redux";
@@ -48,53 +48,42 @@ function Book() {
 	}, [id, dispatch]);
 
 	return (
-		<>
-			<Button isLink onClick={() => navigate(-1)}>
-				<ChevronLeft /> Назад
-			</Button>
-			<div className={styles["book"]}>
-				<img
-					className={styles["image"]}
-					src={book?.photoLink}
-					alt={book?.bookName}
-					loading="lazy"
-				/>
-				<div className={styles["book-info"]}>
-					<h2>{book?.bookName}</h2>
-					<p className={styles["author"]}>{book?.author}</p>
-					<p className={styles["info"]}>
-						<b>Жанр:</b>{" "}
-						<span>
-							{book && genres.find((g) => g.value === book.genre)?.genre}
-						</span>
-					</p>
-					<p className={styles["info"]}>
-						<b>Описание или мнение о книге:</b> <span>{book?.description}</span>
-					</p>
-					<p className={styles["info"]}>
-						<b>Рейтинг:</b>{" "}
-						<span>
-							{book && ratings.find((r) => r.value === book.rating)?.rating}
-						</span>
-					</p>
-					{isOwner && (
-						<div className={styles["book-action"]}>
-							<Button isPrimary onClick={handlerEditButton}>
-								Редактировать
-							</Button>
-							<Button
-								title="Удалить книгу"
-								isSecond
-								isSvg
-								onClick={handlerDeleteButton}
-							>
-								<Trash2 />
-							</Button>
-						</div>
-					)}
-				</div>
+		<div className={styles["book"]}>
+			<div className={styles["book-info"]}>
+				<h2>{book?.bookName}</h2>
+				<p className={styles["author"]}>{book?.author}</p>
+				<p className={styles["info"]}>
+					<b>Жанр:</b>{" "}
+					<span>
+						{book && genres.find((g) => g.value === book.genre)?.genre}
+					</span>
+				</p>
+				<p className={styles["info"]}>
+					<b>Описание или мнение о книге:</b> <span>{book?.description}</span>
+				</p>
+				<p className={styles["info"]}>
+					<b>Рейтинг:</b>{" "}
+					<span>
+						{book && ratings.find((r) => r.value === book.rating)?.rating}
+					</span>
+				</p>
+				{isOwner && (
+					<div className={styles["book-action"]}>
+						<Button isPrimary onClick={handlerEditButton}>
+							Редактировать
+						</Button>
+						<Button
+							title="Удалить книгу"
+							isSecond
+							isSvg
+							onClick={handlerDeleteButton}
+						>
+							<Trash2 />
+						</Button>
+					</div>
+				)}
 			</div>
-		</>
+		</div>
 	);
 }
 

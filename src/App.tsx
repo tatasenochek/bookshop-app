@@ -7,10 +7,11 @@ import { ROUTES } from "./const/const";
 import { Suspense } from "react";
 import { useAuth } from "./hooks/useAuth";
 import { lazy } from "react";
+import LayoutModal from "./layout/LayoutModal/LayoutModal";
+
 export const Signin = lazy(() => import("./pages/Signin/Signin"));
 export const Signup = lazy(() => import("./pages/Signup/Signup"));
 export const AddBook = lazy(() => import("./pages/AddBook/AddBook"));
-export const MyBooks = lazy(() => import("./pages/MyBooks/MyBooks"));
 export const Book = lazy(() => import("./pages/Book/Book"));
 export const NotFound = lazy(() => import("./pages/NotFound/NotFound"));
 
@@ -21,51 +22,59 @@ const router = createBrowserRouter(
 			element: <LayoutMain />,
 			children: [
 				{
-					path: ROUTES.HOME,
+					index: true,
 					element: <Home />,
 				},
 				{
 					path: ROUTES.ADD_BOOK,
 					element: (
 						<RequireAuth>
-							<Suspense fallback={<>Загружаем страницу...</>}>
-								<AddBook />
-							</Suspense>
-						</RequireAuth>
-					),
-				},
-				{
-					path: ROUTES.MY_BOOKS,
-					element: (
-						<RequireAuth>
-							<Suspense fallback={<>Загружаем данные о книгах...</>}>
-								<MyBooks />
-							</Suspense>
+							<Home />
+							<LayoutModal title="">
+								<Suspense fallback={<>Загружаем страницу...</>}>
+									<AddBook />
+								</Suspense>
+							</LayoutModal>
 						</RequireAuth>
 					),
 				},
 				{
 					path: ROUTES.SIGNIN,
 					element: (
-						<Suspense fallback={<>Загружаем страницу...</>}>
-							<Signin />
-						</Suspense>
+						<>
+							<Home />
+							<LayoutModal title="">
+								<Suspense fallback={<>Загружаем страницу...</>}>
+									<Signin />
+								</Suspense>
+							</LayoutModal>
+						</>
 					),
 				},
 				{
 					path: ROUTES.SIGNUP,
 					element: (
-						<Suspense fallback={<>Загружаем страницу...</>}>
-							<Signup />
-						</Suspense>
+						<>
+							<Home />
+							<LayoutModal title="">
+								<Suspense fallback={<>Загружаем страницу...</>}>
+									<Signup />
+								</Suspense>
+							</LayoutModal>
+						</>
 					),
 				},
 				{
-					path: ROUTES.BOOK,
+					path: `${ROUTES.BOOK}/:id`,
 					element: (
-						<Suspense fallback={<>Загружаем данные о книге...</>}>
-							<Book />
-						</Suspense>
+						<>
+							<Home />
+							<LayoutModal title="Подробнее">
+								<Suspense fallback={<>Загружаем...</>}>
+									<Book />
+								</Suspense>
+							</LayoutModal>
+						</>
 					),
 				},
 				{
@@ -83,7 +92,7 @@ const router = createBrowserRouter(
 function App() {
 	useAuth();
 
-	return <RouterProvider router={router}></RouterProvider>;
+	return <RouterProvider router={router} />;
 }
 
 export default App;

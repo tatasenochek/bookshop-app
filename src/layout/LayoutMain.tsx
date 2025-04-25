@@ -12,7 +12,7 @@ function LayoutMain() {
 	return (
 		<>
 			<Header />
-			<Outlet></Outlet>
+			<Outlet />
 			<Suspense fallback={null}>
 				<ToastContainer position="top-right" autoClose={3000} theme="light" />
 			</Suspense>

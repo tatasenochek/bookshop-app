@@ -2,11 +2,12 @@ import styles from "./header.module.scss";
 import logo from "../../assets/books.png";
 import Navigation from "../Navigation/Navigation";
 import { Link } from "react-router-dom";
+import { ROUTES } from "../../const/const";
 
 function Header() {
 	return (
 		<header className={styles["header"]}>
-			<Link to="/">
+			<Link to={`${ROUTES.HOME}`}>
 				<div className={styles["logo"]}>
 					<img
 						className={styles["image"]}

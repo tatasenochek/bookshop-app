@@ -13,7 +13,6 @@ import { AppDispatch } from "../../store/store";
 
 const initialState: IBook = {
 	id: "",
-	photoLink: "",
 	bookName: "",
 	author: "",
 	genre: "",
@@ -83,7 +82,6 @@ function AddBook() {
 		if (book) {
 			setFormData({
 				id: book.id,
-				photoLink: book.photoLink,
 				bookName: book.bookName,
 				author: book.author,
 				genre: book.genre!,
@@ -97,14 +95,6 @@ function AddBook() {
 		<div className={styles["add-book"]}>
 			<h2>{book ? "Редактировать" : "Добавить книгу"}</h2>
 			<form className={styles["form"]} onSubmit={handlerFormSubmit}>
-				<Input
-					label="Фото книги"
-					type="text"
-					name="photoLink"
-					required
-					value={formData.photoLink}
-					onChange={handlerChange}
-				/>
 				<Input
 					label="Название книги"
 					type="text"
