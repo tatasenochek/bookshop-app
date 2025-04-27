@@ -1,86 +1,43 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { auth } from "../../firebase/config";
-import { AppDispatch, RootState } from "../store";
-import { Unsubscribe } from "firebase/auth";
+import { RootState } from "../store";
 
-interface IUser {
+interface IUserState {
+	userUid: string | null;
+	userEmail: string | null;
 	userName: string | null;
-	userId: string | null;
-	userAuthStatus: boolean;
-}
-
-interface IUserState extends IUser {
-	isLoading: boolean;
-	error: string | null;
+	isAuth: boolean;
 }
 
 const initialState: IUserState = {
+	userUid: null,
+	userEmail: null,
 	userName: null,
-	userId: null,
-	userAuthStatus: false,
-	isLoading: false,
-	error: null,
+	isAuth: false
 };
 
 export const userSlice = createSlice({
 	name: "user",
 	initialState,
 	reducers: {
-		setUser: (state, action: PayloadAction<IUser>) => {
-			state.userId = action.payload.userId;
+		setUser: (state, action: PayloadAction<IUserState>) => {
+			state.userUid = action.payload.userUid;
+			state.userEmail = action.payload.userEmail;
 			state.userName = action.payload.userName;
-			state.userAuthStatus = true;
-			state.isLoading = false;
-			state.error = null;
+			state.isAuth = true
 		},
-		setLoading: (state, action: PayloadAction<boolean>) => {
-			state.isLoading = action.payload;
-		},
-		setError: (state, action: PayloadAction<string>) => {
-			state.error = action.payload;
-			state.isLoading = false;
-		},
-		signOut: (state) => {
-			state.userId = null;
+		clearUser: (state) => {
+			state.userUid = null;
+			state.userEmail = null;
 			state.userName = null;
-			state.userAuthStatus = false;
-			state.isLoading = false;
-			state.error = null;
+			state.isAuth = false;
 		},
 	},
 });
 
-export const { setUser, signOut, setLoading, setError } = userSlice.actions;
-
-export const subscribeToAuthChanges =
-	() =>
-	(dispatch: AppDispatch): Unsubscribe => {
-		dispatch(setLoading(true));
-
-		const unsubscribe = auth.onAuthStateChanged(
-			(user) => {
-				if (user) {
-					dispatch(
-						setUser({
-							userName: user.displayName,
-							userId: user.uid,
-							userAuthStatus: true,
-						})
-					);
-				} else {
-					dispatch(signOut());
-				}
-			},
-			(error) => {
-				dispatch(setError(error.message));
-				dispatch(setLoading(false));
-			}
-		);
-
-		return unsubscribe;
-	};
+export const { setUser, clearUser } = userSlice.actions;
 
 export default userSlice.reducer;
+
 export const selectUserName = (state: RootState) => state.user.userName;
-export const selectUserId = (state: RootState) => state.user.userId;
-export const selectUserAuthStatus = (state: RootState) => state.user.userAuthStatus;
+export const selectUserUid = (state: RootState) => state.user.userUid;
+export const selectUserIsAuth = (state: RootState) => state.user.isAuth;

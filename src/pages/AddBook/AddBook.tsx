@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import { useLocation, useNavigate } from "react-router-dom";
 import { IBook } from "../../components/CardBookList/CardBookList";
 import { useDispatch, useSelector } from "react-redux";
-import { selectUserId } from "../../store/slice/userSlice";
+import { selectUserUid } from "../../store/slice/userSlice";
 import { addBook, updateBook } from "../../store/services/bookApi";
 import { AppDispatch } from "../../store/store";
 
@@ -25,7 +25,7 @@ function AddBook() {
 	const { state } = useLocation();
 	const book: IBook = state?.book;
 	const [formData, setFormData] = useState<IBook>(initialState);
-	const userId = useSelector(selectUserId);
+	const userId = useSelector(selectUserUid);
 	const dispatch = useDispatch<AppDispatch>();
 
 	async function handlerFormSubmit(e: FormEvent) {

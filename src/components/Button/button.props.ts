@@ -9,4 +9,5 @@ export interface IButtonProps {
 	isFavorite?: boolean;
 	isSvg?: boolean;
 	title?: string;
+	disabled?: boolean;
 }

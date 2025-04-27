@@ -1,4 +1,4 @@
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import styles from "./navigation.module.scss";
 import clsx from "clsx";
 import { BookPlus, LibraryBig, Menu, X } from "lucide-react";
@@ -6,21 +6,36 @@ import { useState } from "react";
 import Button from "../Button/Button";
 import { useSelector } from "react-redux";
 import { selectUserName } from "../../store/slice/userSlice";
-import { useAuthActions } from "../../hooks/useAuthActions";
 import { ROUTES } from "../../const/const";
+import { useSignOutMutation } from "../../store/services/authApi";
+import { toast } from "react-toastify";
 
 function Navigation() {
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 	const userName = useSelector(selectUserName);
-	const { handlerSignout } = useAuthActions();
 	const location = useLocation();
+	const navigate = useNavigate();
+	const [signOut, { isLoading }] = useSignOutMutation();
+
+	async function handlerSignout() {
+		const res = confirm("Вы действительно хотите выйти?");
+		if (res) {
+			try {
+				await signOut().unwrap()
+				toast.success("Вы успешно вышли из системы");
+				navigate(ROUTES.HOME);
+			} catch (error) {
+				console.error(error);
+			}
+		}
+	}
 
 	return (
 		<>
 			<div className={styles["navigation"]}>
 				{userName ? (
 					<Button title="Меню" isPrimary onClick={handlerSignout}>
-						{userName}
+						{isLoading ? "Выход..." : userName}
 					</Button>
 				) : (
 					<Link
@@ -31,12 +46,17 @@ function Navigation() {
 						Войти
 					</Link>
 				)}
-				<Button isSvg onClick={() => setIsModalOpen(!isModalOpen)} isSecond>
+				<Button
+					aria-label={isModalOpen ? "Закрыть меню" : "Открыть меню"}
+					isSvg
+					onClick={() => setIsModalOpen(!isModalOpen)}
+					isSecond
+				>
 					{isModalOpen === false ? <Menu /> : <X />}
 				</Button>
 			</div>
 			{isModalOpen === true && (
-				<nav className={styles["menu"]}>
+				<nav className={styles["menu"]} aria-label="Основное меню">
 					<NavLink
 						onClick={() => setIsModalOpen(!isModalOpen)}
 						className={({ isActive }) =>

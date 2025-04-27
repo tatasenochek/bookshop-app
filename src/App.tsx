@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
 import LayoutMain from "./layout/LayoutMain";
 import Home from "./pages/Home/Home";
 import RequireAuth from "./components/RequireAuth/RequireAuth";
@@ -82,6 +82,10 @@ const router = createBrowserRouter(
 					element: <NotFound />,
 				},
 			],
+		},
+		{
+			path: "*",
+			element: <Navigate to={ROUTES.NOT_FOUND} replace />,
 		},
 	],
 	{

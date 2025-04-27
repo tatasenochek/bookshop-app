@@ -1,14 +1,25 @@
 import { ReactNode } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { selectUserAuthStatus } from "../../store/slice/userSlice";
 import { ROUTES } from "../../const/const";
+import { selectUserUid } from "../../store/slice/userSlice";
 
 function RequireAuth({ children }: { children: ReactNode }) {
-	const userAuthStatus = useSelector(selectUserAuthStatus);
+	const userUid = useSelector(selectUserUid);
+	const location = useLocation();
 
-	if (userAuthStatus === false) {
-		return <Navigate to={`${ROUTES.SIGNIN}`} replace />;
+
+	if (!userUid) {
+		return (
+			<Navigate
+				to={`${ROUTES.SIGNIN}`}
+				state={{
+					backgroundPath: location,
+					modalOpen: true,
+				}}
+				replace
+			/>
+		);
 	}
 
 	return children;

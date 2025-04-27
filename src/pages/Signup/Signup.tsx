@@ -3,57 +3,35 @@ import styles from "./signup.module.scss";
 import { FormEvent } from "react";
 import Input from "../../components/Input/Input";
 import Button from "../../components/Button/Button";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { auth } from "../../firebase/config";
 import { ISignupForm } from "./signup.props";
 import { toast } from "react-toastify";
 import { ROUTES } from "../../const/const";
-import { useDispatch } from "react-redux";
-import { setUser } from "../../store/slice/userSlice";
+import { useSignUpMutation } from "../../store/services/authApi";
 
 function Signup() {
 	const navigate = useNavigate();
-	const dispatch = useDispatch();
+	const [signUp, {isLoading}] = useSignUpMutation()
 
 	async function handlerSubmitForm(e: FormEvent) {
 		e.preventDefault();
-		
+
 		const target = e.target as typeof e.target & ISignupForm;
-		const name = target.name.value;
-		const email = target.email.value;
-		const password = target.password.value;
+		const name = target.name.value.trim();
+		const email = target.email.value.trim();
+		const password = target.password.value.trim();
 
 		try {
-			const res = await createUserWithEmailAndPassword(auth, email, password);
-			const user = res.user;
+			const response = await signUp({email, password, name}).unwrap()
 
-			await updateProfile(user, {
-				displayName: name,
-			});
-
-			const { getFirestore, doc, setDoc } = await import(
-				"firebase/firestore/lite"
-			);
-			const firestore = getFirestore();
-
-			await setDoc(doc(firestore, "User", user.uid), {
-				email: user.email,
-				name,
-			});
-
-			dispatch(
-				setUser({
-					userName: user.displayName,
-					userId: user.uid,
-					userAuthStatus: true,
-				})
-			);
-
-			toast.success("Пользователь успешно зарегистрирован");
-			navigate(ROUTES.HOME);
+			if (response) {
+				toast.success("Пользователь успешно зарегистрирован");
+				navigate(ROUTES.HOME);
+			} else {
+				toast.error("Ошибка при регистрации пользователя");
+			}
 		} catch (error) {
-			console.log(error);
 			toast.error("Ошибка при регистрации пользователя");
+			console.error("Ошибка при регистрации", error);
 		}
 	}
 
@@ -73,10 +51,12 @@ function Signup() {
 					type="password"
 					label="Пароль"
 					name="password"
-					minLength={3}
+					minLength={6}
 					required
 				/>
-				<Button isPrimary>Отправить</Button>
+				<Button isPrimary disabled={isLoading}>
+					{isLoading ? "Регистрация..." : "Отправить"}
+				</Button>
 			</form>
 			<div className={styles["action"]}>
 				<span className={styles["text"]}>Есть акканут?</span>
