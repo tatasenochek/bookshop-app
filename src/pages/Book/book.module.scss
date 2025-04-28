@@ -32,3 +32,12 @@
 		justify-content: space-between;
 	}
 }
+
+.book-error {
+	margin: 50px auto;
+	text-align: center;
+
+	p {
+		padding-bottom: $size-l;
+	}
+}

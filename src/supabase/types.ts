@@ -12,59 +12,59 @@ export type Database = {
       bookList: {
         Row: {
           book_author: string
+          book_id: string
           book_name: string
-          bookId: string
           created_at: string
           description: string | null
           genre: string
           rating: string
-          user_id: string | null
+          user_id: string
         }
         Insert: {
           book_author: string
+          book_id?: string
           book_name: string
-          bookId?: string
           created_at?: string
           description?: string | null
           genre: string
           rating: string
-          user_id?: string | null
+          user_id: string
         }
         Update: {
           book_author?: string
+          book_id?: string
           book_name?: string
-          bookId?: string
           created_at?: string
           description?: string | null
           genre?: string
           rating?: string
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: []
       }
       favoritesList: {
         Row: {
-          bookId: string
+          book_id: string
           id: number
           user_id: string
         }
         Insert: {
-          bookId: string
+          book_id: string
           id?: number
           user_id: string
         }
         Update: {
-          bookId?: string
+          book_id?: string
           id?: number
           user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "favoritesList_bookId_fkey"
-            columns: ["bookId"]
+            foreignKeyName: "favoritesList_book_id_fkey"
+            columns: ["book_id"]
             isOneToOne: true
             referencedRelation: "bookList"
-            referencedColumns: ["bookId"]
+            referencedColumns: ["book_id"]
           },
         ]
       }

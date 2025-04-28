@@ -1,32 +1,47 @@
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import styles from "./add-book.module.scss";
 import Input from "../../components/Input/Input";
 import Button from "../../components/Button/Button";
-import { genres, ratings } from "../../const/const";
+import { genres, ratings, ROUTES } from "../../const/const";
 import { toast } from "react-toastify";
 import { useLocation, useNavigate } from "react-router-dom";
-import { IBook } from "../../components/CardBookList/CardBookList";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { selectUserUid } from "../../store/slice/userSlice";
-import { addBook, updateBook } from "../../store/services/bookApi";
-import { AppDispatch } from "../../store/store";
+import { Book } from "../../types/types";
+import { useAddBookMutation, useUpdateBookMutation } from "../../store/services/bookMutations";
 
-const initialState: IBook = {
-	id: "",
-	bookName: "",
-	author: "",
-	genre: "",
-	description: "",
-	rating: "",
+const initialState: Book = {
+	book_author: "",
+	book_id: "",
+	book_name: "",
+	created_at: "",
+	description: null,
+	genre: genres[0].value,
+	rating: ratings[0].value,
+	user_id: "",
 };
 
 function AddBook() {
 	const navigate = useNavigate();
 	const { state } = useLocation();
-	const book: IBook = state?.book;
-	const [formData, setFormData] = useState<IBook>(initialState);
+	const book: Book = state?.book;
+	const [formData, setFormData] = useState<Book>(
+		book
+			? {
+					book_id: book.book_id,
+					book_name: book.book_name,
+					book_author: book.book_author,
+					genre: book.genre!,
+					description: book.description!,
+					rating: book.rating!,
+					user_id: book.user_id,
+					created_at: book.created_at,
+			  }
+			: initialState
+	);
 	const userId = useSelector(selectUserUid);
-	const dispatch = useDispatch<AppDispatch>();
+	const [addBook, { isLoading: isAdding }] = useAddBookMutation();
+	const [updateBook, { isLoading: isUpdating }] = useUpdateBookMutation();
 
 	async function handlerFormSubmit(e: FormEvent) {
 		e.preventDefault();
@@ -34,39 +49,41 @@ function AddBook() {
 
 		try {
 			if (book) {
-				dispatch(
-					updateBook({
-						book: {
-							...formData,
-							id: book.id,
-							userId,
-							createdAt: book.createdAt,
-						},
-						userId,
-					})
-				);
+				await updateBook({
+					id: book.book_id,
+					updates: {
+						book_name: formData.book_name,
+						book_author: formData.book_author,
+						genre: formData.genre,
+						description: formData.description,
+						rating: formData.rating,
+					},
+				});
 
 				toast.success("Книга успешно обновлена!");
-				navigate(`/book/${book.id}`);
+				navigate(`${ROUTES.BOOK}/${book.book_id}`);
 			} else {
-				dispatch(
-					addBook({
-						book: {
-							...formData,
-							userId: userId,
-						},
-						userId,
-					})
-				);
+				await addBook({
+					bookData: {
+						book_name: formData.book_name,
+						book_author: formData.book_author,
+						genre: formData.genre,
+						description: formData.description,
+						rating: formData.rating,
+						user_id: userId
+					},
+					userId: userId
+				}).unwrap();
 
 				toast.success("Книга успешно добавлена!");
-				navigate("/");
+				navigate(ROUTES.HOME);
 			}
-		} catch (e) {
-			console.log(e);
-			toast.error("Ошибка при добавлении книги");
+		} catch (error) {
+			console.error("Ошибка в процессе отправки данных:", error);
+			toast.error("Ошибка в процессе отправки данных");
 		}
 	}
+
 
 	function handlerChange(
 		e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -78,19 +95,6 @@ function AddBook() {
 		});
 	}
 
-	useEffect(() => {
-		if (book) {
-			setFormData({
-				id: book.id,
-				bookName: book.bookName,
-				author: book.author,
-				genre: book.genre!,
-				description: book.description!,
-				rating: book.rating!,
-			});
-		}
-	}, [book]);
-
 	return (
 		<div className={styles["add-book"]}>
 			<h2>{book ? "Редактировать" : "Добавить книгу"}</h2>
@@ -98,17 +102,17 @@ function AddBook() {
 				<Input
 					label="Название книги"
 					type="text"
-					name="bookName"
+					name="book_name"
 					required
-					value={formData.bookName}
+					value={formData.book_name}
 					onChange={handlerChange}
 				/>
 				<Input
 					label="Автор книги"
 					type="text"
-					name="author"
+					name="book_author"
 					required
-					value={formData.author}
+					value={formData.book_author}
 					onChange={handlerChange}
 				/>
 				<label className={styles["label"]}>
@@ -131,10 +135,9 @@ function AddBook() {
 				<label className={styles["label"]}>
 					<p className={styles["text"]}>Мнение о книге или описание</p>
 					<textarea
-						required
 						name="description"
 						className={styles["textarea"]}
-						value={formData.description}
+						value={formData.description || ""}
 						onChange={handlerChange}
 					/>
 				</label>
@@ -156,8 +159,12 @@ function AddBook() {
 						))}
 					</select>
 				</label>
-				<Button isPrimary>
-					{book ? "Сохранить изменения" : "Добавить книгу"}
+				<Button isPrimary disabled={isAdding || isUpdating}>
+					{isAdding || isUpdating
+						? "Сохранение..."
+						: book
+						? "Сохранить изменения"
+						: "Добавить книгу"}
 				</Button>
 			</form>
 		</div>

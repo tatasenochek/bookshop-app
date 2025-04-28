@@ -13,44 +13,12 @@ export default defineConfig({
 		cssCodeSplit: false,
 		rollupOptions: {
 			output: {
-				manualChunks(id: string) {
-					if (
-						id.includes("firebase/app") ||
-						id.includes("firebase/auth") ||
-						id.includes("firebase/firestore")
-					) {
-						return "firebase";
-					}
-					if (id.includes("firebase/database")) {
-						return "firebase-database";
-					}
-
-					if (id.includes("react-dom") || id.includes("react-router")) {
-						return "react-core";
-					}
-
-					if (id.includes("redux")) {
-						return "state-management";
-					}
-
-					if (
-						id.includes("lucide") ||
-						id.includes("clsx") ||
-						id.includes("toastify")
-					) {
-						return "ui-libs";
-					}
-
-					if (id.includes("node_modules")) {
-						return "vendor";
-					}
-
-					if (id.includes("/src/components/")) {
-						return "components";
-					}
-					if (id.includes("/src/pages/")) {
-						return "pages";
-					}
+				manualChunks: {
+					react: ["react", "react-dom", "react-router-dom"],
+					redux: ["@reduxjs/toolkit", "react-redux"],
+					supabase: ["@supabase/supabase-js"],
+					ui: ["lucide-react", "clsx"],
+					toastify: ["react-toastify"],
 				},
 			},
 		},
