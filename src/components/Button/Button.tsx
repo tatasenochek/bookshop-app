@@ -11,6 +11,7 @@ function Button({
 	isPrimary = false,
 	isLink = false,
 	isSvg = false,
+	disabled = false,
 }: IButtonProps) {
 	return (
 		<button
@@ -22,7 +23,8 @@ function Button({
 				isPrimary && styles["primary"],
 				isLink && styles["link"],
 				isFavorite && styles["favorite"],
-				isSvg && styles["onlySVG"]
+				isSvg && styles["onlySVG"],
+				disabled && styles["disabled"]
 			)}
 		>
 			{children}

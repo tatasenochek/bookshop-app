@@ -7,4 +7,3 @@ export const booksApi = createApi({
 	tagTypes: ["Book"],
 	endpoints: () => ({})
 });
-

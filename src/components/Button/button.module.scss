@@ -56,3 +56,11 @@
 	padding: 0;
 	padding-top: 3px;
 }
+
+.disabled {
+  cursor: not-allowed;
+	color: $color-darck-opasity;
+}
+.disabled:hover {
+ border: 1px solid $color-darck-opasity;
+}

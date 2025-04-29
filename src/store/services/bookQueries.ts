@@ -6,10 +6,16 @@ export const { useGetAllBooksQuery, useGetBookByIdQuery } =
 	booksApi.injectEndpoints({
 		endpoints: (builder) => ({
 			// получение всех книг
-			getAllBooks: builder.query<Book[], void>({
-				queryFn: async () => {
-					try {
-						const { data, error } = await supabase.from("bookList").select("*");
+      getAllBooks: builder.query<
+        { data: Book[], count: number},
+        { page: number, limit: number }
+    >({
+				queryFn: async ({page, limit}) => {
+        try {
+            const from = (page - 1) * limit;
+            const to = from + limit - 1;
+          
+						const { data, error, count } = await supabase.from("bookList").select("*", { count: "exact" }).range(from, to);
 
 						if (error) {
 							console.error(
@@ -19,7 +25,12 @@ export const { useGetAllBooksQuery, useGetBookByIdQuery } =
 							return { error: { status: error.code, data: error.message } };
 						}
 
-						return { data: data as Book[] };
+						return { 
+              data: { 
+                data: data as Book[], 
+                count: count || 0 
+              } 
+            };
 					} catch (error) {
 						console.error("booksApi: Неизвестная ошибка:", error);
 						return { error: { status: 500, data: "Неизвестная ошибка" } };
