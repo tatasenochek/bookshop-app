@@ -1,5 +1,13 @@
 @use "../../styles/variables" as *;
 
+.home {
+	.action {
+		margin-bottom: $size-xxl;
+
+		
+	}
+}
+
 .home-error {
 	margin: 150px auto;
 	text-align: center;

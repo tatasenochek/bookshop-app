@@ -1,0 +1,28 @@
+@use "../../styles/variables" as *;
+
+.search {
+	border: 1px solid $color-accent-opasity;
+	width: 350px;
+	display: flex;
+	position: relative;
+	align-items: center;
+	border-radius: $size-xs;
+	box-shadow: 0 0 5px $color-darck-opasity;
+	padding-left: $size-s;
+	background-color: $color-light;
+
+	&-input {
+		font-size: 16px;
+		padding: $size-xs;
+		width: 100%;
+		border: none;
+	}
+
+	button {
+		border: none;
+		background-color: $color-darck-opasity;
+		font-size: 16px;
+		padding: $size-xs $size-s;
+		border-radius: 0 $size-xs $size-xs 0;
+	}
+}

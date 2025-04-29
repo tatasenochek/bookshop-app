@@ -8,30 +8,38 @@ export const { useGetAllBooksQuery, useGetBookByIdQuery } =
 			// получение всех книг
       getAllBooks: builder.query<
         { data: Book[], count: number},
-        { page: number, limit: number }
+        { page: number; limit: number; search?: string }
     >({
-				queryFn: async ({page, limit}) => {
+				queryFn: async ({page, limit, search}) => {
         try {
-            const from = (page - 1) * limit;
-            const to = from + limit - 1;
-          
-						const { data, error, count } = await supabase.from("bookList").select("*", { count: "exact" }).range(from, to);
+					const from = (page - 1) * limit;
+					const to = from + limit - 1;
 
-						if (error) {
-							console.error(
-								"booksApi: Ошибка в процессе получения данных:",
-								error
-							);
-							return { error: { status: error.code, data: error.message } };
-						}
+					let query = supabase.from("bookList").select("*", { count: "exact" });
 
-						return { 
-              data: { 
-                data: data as Book[], 
-                count: count || 0 
-              } 
-            };
-					} catch (error) {
+					if (search) {
+						query = query.or(
+							`bookList.book_name.ilike.%${search}%,book_author.eq.${search}`
+						);
+					}
+
+					const { data, error, count } = await query.range(from, to);
+					
+          if (error) {
+						console.error(
+							"booksApi: Ошибка в процессе получения данных:",
+							error
+						);
+						return { error: { status: error.code, data: error.message } };
+					}
+
+					return {
+						data: {
+							data: data as Book[],
+							count: count || 0,
+						},
+					};
+				} catch (error) {
 						console.error("booksApi: Неизвестная ошибка:", error);
 						return { error: { status: 500, data: "Неизвестная ошибка" } };
 					}
