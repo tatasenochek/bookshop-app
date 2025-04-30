@@ -42,3 +42,5 @@ export const ratings: IRating[] = [
 	{ value: "1", rating: "Можно почитать" },
 	{ value: "2", rating: "Обязательна к прочтению" },
 ];
+
+export const limit = 3;

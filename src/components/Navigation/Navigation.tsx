@@ -34,7 +34,12 @@ function Navigation() {
 		<>
 			<div className={styles["navigation"]}>
 				{userName ? (
-					<Button title="Меню" isPrimary onClick={handlerSignout}>
+					<Button
+						aria-label="Личный кабинет"
+						title="Личный кабинет"
+						isPrimary
+						onClick={handlerSignout}
+					>
 						{isLoading ? "Выход..." : userName}
 					</Button>
 				) : (
@@ -47,6 +52,7 @@ function Navigation() {
 					</Link>
 				)}
 				<Button
+					title="Навигационное меню"
 					aria-label={isModalOpen ? "Закрыть меню" : "Открыть меню"}
 					isSvg
 					onClick={() => setIsModalOpen(!isModalOpen)}
@@ -58,6 +64,7 @@ function Navigation() {
 			{isModalOpen === true && (
 				<nav className={styles["menu"]} aria-label="Основное меню">
 					<NavLink
+						aria-label="Главная страница"
 						onClick={() => setIsModalOpen(!isModalOpen)}
 						className={({ isActive }) =>
 							clsx(styles["link"], isActive && styles["active"])
@@ -76,6 +83,7 @@ function Navigation() {
 						to={`${ROUTES.ADD_BOOK}`}
 						state={{ backgroundPath: location }}
 						end
+						aria-label="Добавить книгу"
 					>
 						<BookPlus size={18} />
 						Добавить книгу

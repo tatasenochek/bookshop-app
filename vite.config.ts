@@ -17,7 +17,7 @@ export default defineConfig({
 					react: ["react", "react-dom", "react-router-dom"],
 					redux: ["@reduxjs/toolkit", "react-redux"],
 					supabase: ["@supabase/supabase-js"],
-					ui: ["lucide-react", "clsx"],
+					ui: ["lucide-react", "clsx", "react-spinners"],
 					toastify: ["react-toastify"],
 				},
 			},

@@ -6,6 +6,10 @@ import { ChangeEvent, CSSProperties, MouseEvent, useState } from "react";
 import { useGetAllBooksQuery } from "../../store/services/bookQueries";
 import Pagination from "../../components/Pagination/Pagination";
 import Search from "../../components/Search/Search";
+import { useSelector } from "react-redux";
+import { selectUserUid } from "../../store/slice/userSlice";
+import { limit } from "../../const/const";
+import Input from "../../components/Input/Input";
 
 const override: CSSProperties = {
 	display: "block",
@@ -13,37 +17,28 @@ const override: CSSProperties = {
 };
 
 function Home() {
+	const userId = useSelector(selectUserUid);
 	const [page, setPage] = useState(1);
 	const [search, setSearch] = useState<string>("");
-	const [searchQuery, setSearchQuery] = useState("");
-
-	const limit = 3;
+	const [searchQuery, setSearchQuery] = useState<string>("");
+	const [onlyMyBooks, setOnlyMyBooks] = useState(false);
 
 	const {
 		data: booksList,
 		isLoading,
 		isError,
 		refetch,
-	} = useGetAllBooksQuery({ page, limit, search: searchQuery });
+	} = useGetAllBooksQuery(
+		{
+			page,
+			limit,
+			search: searchQuery,
+			userId: onlyMyBooks && userId ? userId : undefined,
+		},
+		{ skip: !userId }
+	);
 
 	const totalPages = Math.ceil((booksList?.count || 0) / limit);
-
-	function handleNextPage() {
-		if (page < totalPages) {
-			setPage((prev) => prev + 1);
-		}
-	}
-
-	function handlePrevPage() {
-		if (page !== 1) {
-			setPage((prev) => prev - 1);
-		}
-	}
-
-	function handleCurrentPage(index: number) {
-		const page = index + 1;
-		setPage(page);
-	}
 
 	function handleChangeSearch(e: ChangeEvent<HTMLInputElement>) {
 		setSearch(e.target.value);
@@ -54,6 +49,7 @@ function Home() {
 		setPage(1);
 		setSearchQuery(search);
 		refetch();
+		setSearch("");
 	}
 
 	if (isLoading) {
@@ -89,6 +85,16 @@ function Home() {
 					handleChangeSearch={handleChangeSearch}
 					handleSearch={handleSearch}
 				/>
+				<Input
+					label="Только мои"
+					type="checkbox"
+					isCheckbox
+					checked={onlyMyBooks}
+					onChange={() => {
+						setOnlyMyBooks(!onlyMyBooks);
+						setPage(1);
+					}}
+				/>
 			</div>
 			{booksList && booksList.count > 0 ? (
 				<CardBookList booksList={booksList.data} />
@@ -98,9 +104,7 @@ function Home() {
 			<Pagination
 				page={page}
 				totalPages={totalPages}
-				handleNextPage={handleNextPage}
-				handlePrevPage={handlePrevPage}
-				handleCurrentPage={handleCurrentPage}
+				onPageChange={(page) => setPage(page)}
 			/>
 		</div>
 	);

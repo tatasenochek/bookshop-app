@@ -1,21 +1,36 @@
 @use "../../styles/variables" as *;
 
 .input {
-  display: flex;
-  flex-direction: column;
-  gap: $size-xs;
+	display: flex;
+	flex-direction: column;
+	gap: $size-xs;
 
-  .text {
-    color: $color-accent;
-  }
+	.text {
+		color: $color-accent;
+	}
 
-  .field {
-    height: 40px;
-    padding: $size-xs;
-    border-radius: $size-xs;
-    border: 1px solid $color-darck-opasity;
-    box-shadow: 0 0 5px $color-darck-opasity;
-    font-size: 16px;
-    color: inherit;
-  }
+	.field {
+		height: 40px;
+		padding: $size-xs;
+		border-radius: $size-xs;
+		border: 1px solid $color-darck-opasity;
+		box-shadow: 0 0 5px $color-darck-opasity;
+		font-size: 16px;
+		color: inherit;
+	}
+}
+
+.input--checkbox {
+	flex-direction: row;
+
+	.field {
+		height: 32px;
+		border: none;
+		box-shadow: none;
+	}
+
+	.field[type="checkbox"] {
+		width: auto;
+		transform: scale(1.5);
+	}
 }

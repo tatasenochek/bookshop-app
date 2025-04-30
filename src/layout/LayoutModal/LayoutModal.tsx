@@ -43,7 +43,13 @@ function LayoutModal({
 				<div className={styles["content"]}>
 					<div className={styles["header"]}>
 						<p>{title}</p>
-						<Button title="Закрыть" isSecond isSvg onClick={handleClose}>
+						<Button
+							title="Закрыть"
+							aria-label="Закрыть модальное окно"
+							isSecond
+							isSvg
+							onClick={handleClose}
+						>
 							<X />
 						</Button>
 					</div>

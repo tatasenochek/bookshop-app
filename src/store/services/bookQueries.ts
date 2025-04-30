@@ -8,9 +8,9 @@ export const { useGetAllBooksQuery, useGetBookByIdQuery } =
 			// получение всех книг
       getAllBooks: builder.query<
         { data: Book[], count: number},
-        { page: number; limit: number; search?: string }
+        { page: number; limit: number; search?: string, userId?: string }
     >({
-				queryFn: async ({page, limit, search}) => {
+				queryFn: async ({page, limit, search, userId}) => {
         try {
 					const from = (page - 1) * limit;
 					const to = from + limit - 1;
@@ -19,8 +19,12 @@ export const { useGetAllBooksQuery, useGetBookByIdQuery } =
 
 					if (search) {
 						query = query.or(
-							`bookList.book_name.ilike.%${search}%,book_author.eq.${search}`
+							`book_name.ilike.%${search}%,book_author.ilike.%${search}%`
 						);
+          }
+          
+          if (userId) {
+						query = query.eq("user_id", userId);
 					}
 
 					const { data, error, count } = await query.range(from, to);

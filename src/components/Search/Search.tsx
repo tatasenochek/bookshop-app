@@ -19,7 +19,9 @@ function Search({ search, handleChangeSearch, handleSearch }: ISearchProps) {
 				value={search}
 				onChange={handleChangeSearch}
 			/>
-			<button onClick={handleSearch}>Найти</button>
+			<button aria-label="Найти" onClick={handleSearch}>
+				Найти
+			</button>
 		</div>
 	);
 }
