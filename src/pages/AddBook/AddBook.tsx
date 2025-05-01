@@ -136,6 +136,7 @@ function AddBook() {
 					<p className={styles["text"]}>Мнение о книге или описание</p>
 					<textarea
 						name="description"
+						aria-label="Описание книги"
 						className={styles["textarea"]}
 						value={formData.description || ""}
 						onChange={handlerChange}

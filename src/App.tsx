@@ -1,10 +1,13 @@
-import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
+import {
+	createBrowserRouter,
+	Navigate,
+	RouterProvider,
+} from "react-router-dom";
 import LayoutMain from "./layout/LayoutMain";
 import Home from "./pages/Home/Home";
 import RequireAuth from "./components/RequireAuth/RequireAuth";
 import "react-toastify/dist/ReactToastify.css";
 import { ROUTES } from "./const/const";
-import { Suspense } from "react";
 import { useAuth } from "./hooks/useAuth";
 import { lazy } from "react";
 import LayoutModal from "./layout/LayoutModal/LayoutModal";
@@ -29,11 +32,8 @@ const router = createBrowserRouter(
 					path: ROUTES.ADD_BOOK,
 					element: (
 						<RequireAuth>
-							<Home />
-							<LayoutModal title="">
-								<Suspense fallback={<>Загружаем страницу...</>}>
-									<AddBook />
-								</Suspense>
+							<LayoutModal title="" Component={Home}>
+								<AddBook />
 							</LayoutModal>
 						</RequireAuth>
 					),
@@ -41,40 +41,25 @@ const router = createBrowserRouter(
 				{
 					path: ROUTES.SIGNIN,
 					element: (
-						<>
-							<Home />
-							<LayoutModal title="">
-								<Suspense fallback={<>Загружаем страницу...</>}>
-									<Signin />
-								</Suspense>
-							</LayoutModal>
-						</>
+						<LayoutModal title="" Component={Home}>
+							<Signin />
+						</LayoutModal>
 					),
 				},
 				{
 					path: ROUTES.SIGNUP,
 					element: (
-						<>
-							<Home />
-							<LayoutModal title="">
-								<Suspense fallback={<>Загружаем страницу...</>}>
-									<Signup />
-								</Suspense>
-							</LayoutModal>
-						</>
+						<LayoutModal title="" Component={Home}>
+							<Signup />
+						</LayoutModal>
 					),
 				},
 				{
 					path: `${ROUTES.BOOK}/:id`,
 					element: (
-						<>
-							<Home />
-							<LayoutModal title="Подробнее">
-								<Suspense fallback={<>Загружаем...</>}>
-									<Book />
-								</Suspense>
-							</LayoutModal>
-						</>
+						<LayoutModal title="Подробнее" Component={Home}>
+							<Book />
+						</LayoutModal>
 					),
 				},
 				{

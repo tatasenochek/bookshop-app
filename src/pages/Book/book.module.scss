@@ -5,13 +5,7 @@
 	display: flex;
 	gap: $size-xxl;
 
-	.image {
-		max-width: 355px;
-	}
-
 	.book-info {
-		width: 355px;
-
 		.author {
 			padding: $size-s 0 $size-xxl;
 			color: $color-accent;

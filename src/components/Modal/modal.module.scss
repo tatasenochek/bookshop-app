@@ -1,0 +1,40 @@
+@use "../../styles/variables" as *;
+
+.overlay {
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.3);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 9;
+}
+
+.panel {
+	width: 500px;
+	border: 1px solid rgba(0, 0, 0, 0.3);
+	border-radius: $size-xs;
+	background: $color-light;
+	box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+
+	.content {
+		padding: 0 $size-m $size-m;
+	}
+
+	.header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: $size-m $size-m 0;
+
+    p {
+     opacity: 0.5; 
+    }
+	}
+}
+
+@media (max-width: 425px) {
+  .panel {
+    width: 350px;
+  }
+}

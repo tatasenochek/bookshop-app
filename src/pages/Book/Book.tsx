@@ -22,7 +22,9 @@ function Book() {
 	} = useGetBookByIdQuery(bookId || "", {
 		skip: !bookId,
 	});
-	const [deleteBook] = useDeleteBookMutation();
+	const [deleteBook] = useDeleteBookMutation({
+		fixedCacheKey: "delete-book",
+	});
 
 	const isOwner = userId === book?.user_id;
 
@@ -69,7 +71,7 @@ function Book() {
 	}
 
 	return (
-		<div className={styles["book"]}>
+		<article className={styles["book"]}>
 			<div className={styles["book-info"]}>
 				<h2>{book?.book_name}</h2>
 				<p className={styles["author"]}>{book?.book_author}</p>
@@ -104,7 +106,7 @@ function Book() {
 					</div>
 				)}
 			</div>
-		</div>
+		</article>
 	);
 }
 

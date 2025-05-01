@@ -7,7 +7,7 @@ import { ROUTES } from "../../const/const";
 function Header() {
 	return (
 		<header className={styles["header"]}>
-			<Link to={`${ROUTES.HOME}`}>
+			<Link to={`${ROUTES.HOME}`} >
 				<div className={styles["logo"]}>
 					<img
 						className={styles["image"]}
