@@ -19,7 +19,7 @@ function Signin() {
 		formState: { errors, isValid, isSubmitting },
 	} = useForm<SigninFormData>({
 		resolver: zodResolver(SigninSchema),
-		mode: "onBlur",
+		mode: "all",
 		reValidateMode: "onChange",
 	});
 
@@ -34,10 +34,10 @@ function Signin() {
 			});
 		} catch (error) {
 			const e = error as { status: number; data: string };
-			if (e.status === 401) {
+			if (e.status === 401 || e.status === 400) {
 				toast.error("Неверный email или пароль");
 			} else {
-				toast.error("Ошибка при регистрации пользователя");
+				toast.error("Ошибка авторизации пользователя");
 			}
 			console.error("Ошибка при регистрации пользователя", error);
 		}
@@ -64,7 +64,11 @@ function Signin() {
 					{...register("password")}
 					error={errors.password?.message}
 				/>
-				<Button isPrimary disabled={!isValid || isSubmitting}>
+				<Button
+					isPrimary
+					disabled={!isValid || isSubmitting}
+					title={!isValid ? "Заполните все поля правильно" : undefined}
+				>
 					{isSubmitting ? "Вход..." : "Войти"}
 				</Button>
 			</form>

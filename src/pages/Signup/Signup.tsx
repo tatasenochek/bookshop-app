@@ -18,7 +18,7 @@ function Signup() {
 		formState: { errors, isValid, isSubmitting },
 	} = useForm<SignupFormData>({
 		resolver: zodResolver(SignupSchema),
-		mode: "onBlur",
+		mode: "all",
 		reValidateMode: "onChange",
 	});
 
@@ -65,7 +65,11 @@ function Signup() {
 					{...register("password")}
 					error={errors.password?.message}
 				/>
-				<Button isPrimary disabled={!isValid || isSubmitting}>
+				<Button
+					isPrimary
+					disabled={!isValid || isSubmitting}
+					title={!isValid ? "Заполните все поля правильно" : undefined}
+				>
 					{isSubmitting ? "Регистрация..." : "Отправить"}
 				</Button>
 			</form>

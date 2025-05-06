@@ -29,7 +29,7 @@ function AddBook() {
 		formState: { errors, isValid },
 	} = useForm<BookFormData>({
 		resolver: zodResolver(BookSchema),
-		mode: "onBlur",
+		mode: "all",
 		defaultValues: book
 			? {
 					book_name: book.book_name,
@@ -160,7 +160,11 @@ function AddBook() {
 								</span>
 							)}
 						</label>
-						<Button isPrimary disabled={!isValid || isAdding || isUpdating}>
+						<Button
+							isPrimary
+							disabled={!isValid || isAdding || isUpdating}
+							title={!isValid ? "Заполните все поля правильно" : undefined}
+						>
 							{isAdding || isUpdating
 								? "Сохранение..."
 								: book

@@ -29,8 +29,7 @@ function Home() {
 			limit,
 			search: searchQuery,
 			userId: onlyMyBooks && userId ? userId : undefined,
-		},
-		{ skip: !userId }
+		}
 	);
 
 	const totalPages = Math.ceil((booksList?.count || 0) / limit);

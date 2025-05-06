@@ -1,8 +1,8 @@
-import { PostgrestError } from "@supabase/supabase-js";
+import { PostgrestError, AuthError } from "@supabase/supabase-js";
 
 type BaseQueryResponse<T> = {
 	data?: T;
-	error?: PostgrestError | null;
+	error?: PostgrestError | AuthError | null;
 	count?: number | null;
 };
 

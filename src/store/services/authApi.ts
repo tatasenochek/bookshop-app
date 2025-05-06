@@ -1,6 +1,7 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import supabase from "../../supabase/config";
 import { Session, User } from "@supabase/supabase-js";
+import { baseQuery } from "../utils/baseQuery";
 
 interface IAuth {
 	email: string;
@@ -15,63 +16,45 @@ interface IAuthResponse {
 
 export const authApi = createApi({
 	reducerPath: "authApi",
-	baseQuery: async () => ({ data: null }),
+	baseQuery: baseQuery,
 	endpoints: (builder) => ({
 		// регистрация
 		signUp: builder.mutation<IAuthResponse, IAuth>({
-			async queryFn({ email, password, name }: IAuth) {
-				const { data, error } = await supabase.auth.signUp({
-					email,
-					password,
-					options: {
-						data: {
-							name,
+			query: ({ email, password, name }) => ({
+				queryFn: async () =>
+					supabase.auth.signUp({
+						email,
+						password,
+						options: {
+							data: { name },
 						},
-					},
-				});
-				if (error)
-					return { error: { status: error.status, data: error.message } };
-				return { data };
-			},
+					}),
+			}),
 		}),
 
 		// авторизация
 		signIn: builder.mutation<IAuthResponse, IAuth>({
-			async queryFn({ email, password }: IAuth) {
-				const { data, error } = await supabase.auth.signInWithPassword({
-					email,
-					password,
-				});
-
-				if (error)
-					return { error: { status: error.status, data: error.message } };
-				return { data };
-			},
+			query: ({ email, password }) => ({
+				queryFn: async () =>
+					supabase.auth.signInWithPassword({
+						email,
+						password,
+					}),
+			}),
 		}),
 
 		// выход
 		signOut: builder.mutation<void, void>({
-			async queryFn() {
-				const { error } = await supabase.auth.signOut();
-
-				if (error) {
-					return { error: { status: error.status, data: error.message } };
-				} else {
-					return { data: undefined };
-				}
-			},
+			query: () => ({
+				queryFn: async () => supabase.auth.signOut(),
+			}),
 		}),
 
-    // получение сессии
+		// получение сессии
 		getSession: builder.query({
-			async queryFn() {
-				const { data, error } = await supabase.auth.getSession();
-
-				if (error) {
-					return { error: { status: error.status, data: error.message } };
-				}
-				return { data };
-			},
+			query: () => ({
+				queryFn: async () => supabase.auth.getSession(),
+			}),
 		}),
 	}),
 });
