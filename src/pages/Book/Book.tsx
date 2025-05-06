@@ -8,6 +8,7 @@ import { selectUserUid } from "../../store/slice/userSlice";
 import { toast } from "react-toastify";
 import { useGetBookByIdQuery } from "../../store/services/bookQueries";
 import { useDeleteBookMutation } from "../../store/services/bookMutations";
+import Loader from "../../components/Loader/Loader";
 
 function Book() {
 	const { id: bookId } = useParams();
@@ -22,22 +23,22 @@ function Book() {
 	} = useGetBookByIdQuery(bookId || "", {
 		skip: !bookId,
 	});
-	const [deleteBook] = useDeleteBookMutation({
-		fixedCacheKey: "delete-book",
-	});
+	const [deleteBook] = useDeleteBookMutation();
 
 	const isOwner = userId === book?.user_id;
 
 	async function handlerDeleteButton() {
 		const res = confirm("Вы действительно хотите удалить книгу?");
+		if (!res || !bookId) return;
 
-		if (res) {
-			await deleteBook(bookId!).unwrap();
-			toast.success("Книга успешно удалена!");
-			navigate(ROUTES.HOME);
-		}
-
-		return;
+		 try {
+				await deleteBook(bookId).unwrap();
+				toast.success("Книга успешно удалена!");
+				navigate(ROUTES.HOME);
+			} catch (error) {
+				toast.error("Не удалось удалить книгу");
+				console.error("Ошибка при удалении книги:", error);
+			}
 	}
 
 	function handlerEditButton() {
@@ -52,11 +53,7 @@ function Book() {
 	}
 
 	if (isLoading) {
-		return (
-			<div className={styles["book"]}>
-				<p>Загружаем данные о книге..</p>
-			</div>
-		);
+		return <Loader/>
 	}
 
 	if (isError) {

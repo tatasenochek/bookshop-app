@@ -1,17 +1,10 @@
 import { Dialog, DialogPanel } from "@headlessui/react";
-import { ReactNode } from "react";
 import styles from "./modal.module.scss";
 import Button from "../Button/Button";
 import { X } from "lucide-react";
+import { IModalProps } from "./modal.props";
 
-interface ModalProps {
-	isOpen: boolean;
-	onClose: () => void;
-	title?: string;
-	children: ReactNode;
-}
-
-export function Modal({ isOpen, onClose, title, children }: ModalProps) {
+export function Modal({ isOpen, onClose, title, children }: IModalProps) {
 	return (
 		<Dialog open={isOpen} onClose={onClose}>
 			<div className={styles["overlay"]}>
