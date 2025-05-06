@@ -59,8 +59,11 @@
 
 .disabled {
   cursor: not-allowed;
-	color: $color-darck-opasity;
+	border: 1px solid lightgray;
+	background-color:  lightgray;
+	color: $color-light;
 }
 .disabled:hover {
- border: 1px solid $color-darck-opasity;
+	border: 1px solid lightgray;
+	background-color:  lightgray;
 }

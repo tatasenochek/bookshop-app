@@ -8,6 +8,26 @@
 	.text {
 		color: $color-accent;
 	}
+	.wrapper-field {
+		position: relative;
+
+		input {
+			width: 100%;
+		}
+
+		button {
+			position: absolute;
+			right: 0;
+			height: 100%;
+			width: 40px;
+			background: transparent;
+			border: none;
+
+			svg {
+				padding-top: 4px;
+			}
+		}
+	}
 
 	.field {
 		height: 40px;
@@ -17,6 +37,18 @@
 		box-shadow: 0 0 5px $color-darck-opasity;
 		font-size: 16px;
 		color: inherit;
+	}
+
+	&--error {
+		.field {
+			border-color: red;
+		}
+	}
+
+	.error {
+		color: red;
+		font-size: 12px;
+		margin-top: 4px;
 	}
 }
 

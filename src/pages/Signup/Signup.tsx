@@ -1,36 +1,44 @@
 import { Link, useNavigate } from "react-router-dom";
 import styles from "./signup.module.scss";
-import { FormEvent } from "react";
 import Input from "../../components/Input/Input";
 import Button from "../../components/Button/Button";
-import { ISignupForm } from "./signup.props";
 import { toast } from "react-toastify";
 import { ROUTES } from "../../const/const";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useSignUpMutation } from "../../store/services/authApi";
+import { SignupFormData, SignupSchema } from "../../types/types";
 
 function Signup() {
 	const navigate = useNavigate();
-	const [signUp, {isLoading}] = useSignUpMutation()
+	const [signUp] = useSignUpMutation();
+	const {
+		register,
+		handleSubmit,
+		formState: { errors, isValid, isSubmitting },
+	} = useForm<SignupFormData>({
+		resolver: zodResolver(SignupSchema),
+		mode: "onBlur",
+		reValidateMode: "onChange",
+	});
 
-	async function handlerSubmitForm(e: FormEvent) {
-		e.preventDefault();
-
-		const target = e.target as typeof e.target & ISignupForm;
-		const name = target.name.value.trim();
-		const email = target.email.value.trim();
-		const password = target.password.value.trim();
+	async function onSubmit(data: SignupFormData) {
+		if (isSubmitting) return;
 
 		try {
-			const response = await signUp({email, password, name}).unwrap()
+			const response = await signUp(data).unwrap();
 
 			if (response) {
 				toast.success("Пользователь успешно зарегистрирован");
 				navigate(ROUTES.HOME);
-			} else {
-				toast.error("Ошибка при регистрации пользователя");
 			}
 		} catch (error) {
-			toast.error("Ошибка при регистрации пользователя");
+			const e = error as { status: number; data: string}
+			if (e.status === 422) {
+				toast.error("Пользователь с таким email уже существует");
+			} else {
+				toast.error("Ошибка при регистрации");
+			}
 			console.error("Ошибка при регистрации", error);
 		}
 	}
@@ -38,24 +46,27 @@ function Signup() {
 	return (
 		<div className={styles["signup"]}>
 			<h2>Регистрация</h2>
-			<form onSubmit={handlerSubmitForm} className={styles["signup-form"]}>
-				<Input type="text" label="Имя" name="name" minLength={3} required />
+			<form onSubmit={handleSubmit(onSubmit)} className={styles["signup-form"]}>
+				<Input label="Имя" {...register("name")} error={errors.name?.message} />
 				<Input
-					type="email"
 					label="Электронная почта"
-					name="email"
-					minLength={3}
-					required
+					{...register("email")}
+					error={
+						errors.email?.type === "required"
+							? "Обязательное поле"
+							: errors.email?.type === "invalid_string"
+							? "Некорректный формат email"
+							: errors.email?.message
+					}
 				/>
 				<Input
 					type="password"
 					label="Пароль"
-					name="password"
-					minLength={6}
-					required
+					{...register("password")}
+					error={errors.password?.message}
 				/>
-				<Button isPrimary disabled={isLoading}>
-					{isLoading ? "Регистрация..." : "Отправить"}
+				<Button isPrimary disabled={!isValid || isSubmitting}>
+					{isSubmitting ? "Регистрация..." : "Отправить"}
 				</Button>
 			</form>
 			<div className={styles["action"]}>

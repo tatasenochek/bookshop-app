@@ -31,6 +31,16 @@
 				box-shadow: 0 0 5px $color-darck-opasity;
 				font-size: 16px;
 				color: inherit;
+
+				&--error {
+					border-color: red;
+				}
+			}
+
+			.error {
+				color: red;
+				font-size: 12px;
+				margin-top: 4px;
 			}
 
 			.textarea {

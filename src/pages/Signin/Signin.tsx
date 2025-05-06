@@ -1,60 +1,75 @@
-import { FormEvent } from "react";
 import styles from "./signin.module.scss";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Input from "../../components/Input/Input";
 import Button from "../../components/Button/Button";
-import { ISigninForm } from "./signin.props";
 import { toast } from "react-toastify";
 import { ROUTES } from "../../const/const";
 import { useSignInMutation } from "../../store/services/authApi";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { SigninFormData, SigninSchema } from "../../types/types";
 
 function Signin() {
 	const navigate = useNavigate();
 	const location = useLocation();
-	const [signIn, { isLoading }] = useSignInMutation();
+	const [signIn] = useSignInMutation();
+	const {
+		register,
+		handleSubmit,
+		formState: { errors, isValid, isSubmitting },
+	} = useForm<SigninFormData>({
+		resolver: zodResolver(SigninSchema),
+		mode: "onBlur",
+		reValidateMode: "onChange",
+	});
 
-	async function handlerSubmitForm(e: FormEvent) {
-		e.preventDefault();
-		const target = e.target as typeof e.target & ISigninForm;
-		const email = target.email.value;
-		const password = target.password.value;
+	async function onSubmit(data: SigninFormData) {
+		if (isSubmitting) return;
 
 		try {
-			await signIn({ email, password }).unwrap();
+			await signIn(data).unwrap();
 			toast.success("Вы успешно авторизованы");
 			navigate(location.state?.backgroundPath?.pathname || ROUTES.HOME, {
 				state: { modalOpen: location.state?.modalOpen },
 			});
 		} catch (error) {
-			console.log(error);
-			toast.error("Ошибка при регистрации пользователя");
+			const e = error as { status: number; data: string };
+			if (e.status === 401) {
+				toast.error("Неверный email или пароль");
+			} else {
+				toast.error("Ошибка при регистрации пользователя");
+			}
+			console.error("Ошибка при регистрации пользователя", error);
 		}
 	}
 
 	return (
 		<div className={styles["signin"]}>
 			<h2>Войти</h2>
-			<form onSubmit={handlerSubmitForm} className={styles["signin-form"]}>
+			<form onSubmit={handleSubmit(onSubmit)} className={styles["signin-form"]}>
 				<Input
-					type="email"
 					label="Электронная почта"
-					name="email"
-					minLength={3}
-					required
+					{...register("email")}
+					error={
+						errors.email?.type === "required"
+							? "Обязательное поле"
+							: errors.email?.type === "invalid_string"
+							? "Некорректный формат email"
+							: errors.email?.message
+					}
 				/>
 				<Input
 					type="password"
 					label="Пароль"
-					name="password"
-					minLength={6}
-					required
+					{...register("password")}
+					error={errors.password?.message}
 				/>
-				<Button isPrimary disabled={isLoading}>
-					{isLoading ? "Вход..." : "Войти"}
+				<Button isPrimary disabled={!isValid || isSubmitting}>
+					{isSubmitting ? "Вход..." : "Войти"}
 				</Button>
 			</form>
 			<div className={styles["action"]}>
-				<span className={styles["text"]}>Есть акканут?</span>
+				<span className={styles["text"]}>Нет аккаунта?</span>
 				<Link
 					className={styles["link"]}
 					state={{ backgroundPath: location }}

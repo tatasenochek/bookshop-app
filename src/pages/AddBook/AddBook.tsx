@@ -1,4 +1,3 @@
-import { ChangeEvent, FormEvent, useState } from "react";
 import styles from "./add-book.module.scss";
 import Input from "../../components/Input/Input";
 import Button from "../../components/Button/Button";
@@ -7,99 +6,87 @@ import { toast } from "react-toastify";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectUserUid } from "../../store/slice/userSlice";
-import { Book } from "../../types/types";
+import { Book, BookFormData, BookSchema } from "../../types/types";
 import {
 	useAddBookMutation,
 	useUpdateBookMutation,
 } from "../../store/services/bookMutations";
-
-const initialState: Omit<Book, "book_id" | "created_at"> = {
-	book_author: "",
-	book_name: "",
-	description: null,
-	genre: genres[0].value,
-	rating: ratings[0].value,
-	user_id: "",
-};
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import clsx from "clsx";
+import { useCallback } from "react";
 
 function AddBook() {
 	const navigate = useNavigate();
 	const { state } = useLocation();
 	const userId = useSelector(selectUserUid);
 	const book: Book = state?.book;
-	const [formData, setFormData] = useState<
-		Omit<Book, "book_id" | "created_at">
-	>(
-		book
+	const [addBook, { isLoading: isAdding }] = useAddBookMutation();
+	const [updateBook, { isLoading: isUpdating }] = useUpdateBookMutation();
+	const {
+		register,
+		handleSubmit,
+		formState: { errors, isValid },
+	} = useForm<BookFormData>({
+		resolver: zodResolver(BookSchema),
+		mode: "onBlur",
+		defaultValues: book
 			? {
 					book_name: book.book_name,
 					book_author: book.book_author,
 					genre: book.genre,
-					description: book.description,
+					description: book.description || "",
 					rating: book.rating,
-					user_id: userId!,
 			  }
-			: initialState
-	);
-	const [addBook, { isLoading: isAdding }] = useAddBookMutation();
-	const [updateBook, { isLoading: isUpdating }] = useUpdateBookMutation();
+			: {
+					genre: '',
+					rating: ratings[0].value,
+			  },
+	});
 
-	async function handlerFormSubmit(e: FormEvent) {
-		e.preventDefault();
-		if (!userId) {
-			toast.error("Необходимо авторизоваться");
-			return;
-		}
-
-		try {
-			if (book) {
-				await updateBook({
-					id: book.book_id,
-					updates: {
-						book_name: formData.book_name,
-						book_author: formData.book_author,
-						genre: formData.genre,
-						description: formData.description,
-						rating: formData.rating,
-					},
-				}).unwrap();
-
-				toast.success("Книга успешно обновлена!");
-				navigate(`${ROUTES.BOOK}/${book.book_id}`);
-			} else {
-				await addBook({
-					bookData: {
-						...formData,
-						user_id: userId,
-					},
-				}).unwrap();
-
-				toast.success("Книга успешно добавлена!");
-				navigate(ROUTES.HOME);
-			}
-		} catch (error: unknown) {
-			let errorMessage;
-
-			if (typeof error === "object" && error !== null && "data" in error) {
-				errorMessage = (error as { data: string }).data;
-			} else if (error instanceof Error) {
-				errorMessage = error.message;
-			}
-
-			console.error(errorMessage);
-			toast.error("Ошибка в процессе отправки данных");
-		}
+	const onSubmit = useCallback(async (data: BookFormData) => {if (!userId) {
+		toast.error("Необходимо авторизоваться");
+		return;
 	}
 
-	function handlerChange(
-		e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
-	) {
-		const { name, value } = e.target;
-		setFormData((prev) => ({
-			...prev,
-			[name]: value,
-		}));
-	}
+	try {
+		if (book) {
+			await updateBook({
+				id: book.book_id,
+				updates: {
+					book_name: data.book_name,
+					book_author: data.book_author,
+					genre: data.genre,
+					description: data.description,
+					rating: data.rating,
+				},
+			}).unwrap();
+
+			toast.success("Книга успешно обновлена!");
+			navigate(`${ROUTES.BOOK}/${book.book_id}`);
+		} else {
+			await addBook({
+				bookData: {
+					...data,
+					user_id: userId,
+				},
+			}).unwrap();
+
+			toast.success("Книга успешно добавлена!");
+			navigate(ROUTES.HOME);
+		}
+	} catch (error: unknown) {
+		let errorMessage;
+
+		if (typeof error === "object" && error !== null && "data" in error) {
+			errorMessage = (error as { data: string }).data;
+		} else if (error instanceof Error) {
+			errorMessage = error.message;
+		}
+
+		console.error(errorMessage);
+		toast.error("Ошибка в процессе отправки данных");
+	}}, [addBook, book, navigate, updateBook, userId]);
 
 	return (
 		<div className={styles["add-book"]}>
@@ -108,32 +95,28 @@ function AddBook() {
 			) : (
 				<>
 					<h2>{book ? "Редактировать" : "Добавить книгу"}</h2>
-					<form className={styles["form"]} onSubmit={handlerFormSubmit}>
+					<form className={styles["form"]} onSubmit={handleSubmit(onSubmit)}>
 						<Input
 							label="Название книги"
-							type="text"
-							name="book_name"
-							required
-							value={formData.book_name}
-							onChange={handlerChange}
+							aria-label="Название книги"
+							{...register("book_name")}
+							error={errors.book_name?.message}
 						/>
 						<Input
 							label="Автор книги"
-							type="text"
-							name="book_author"
-							required
-							value={formData.book_author}
-							onChange={handlerChange}
+							aria-label="Автор книги"
+							{...register("book_author")}
+							error={errors.book_author?.message}
 						/>
 						<label className={styles["label"]}>
 							<p className={styles["text"]}>Жанр книги</p>
 							<select
-								required
-								className={styles["select"]}
-								name="genre"
-								id="genre-select"
-								value={formData.genre}
-								onChange={handlerChange}
+								className={clsx(
+									styles["select"],
+									errors.genre && styles["select--error"]
+								)}
+								aria-label="Жанр книги"
+								{...register("genre")}
 							>
 								{genres.map((g, index) => (
 									<option key={index} value={g.value}>
@@ -141,27 +124,29 @@ function AddBook() {
 									</option>
 								))}
 							</select>
+							{errors.genre && (
+								<span className={styles["error"]} aria-live="assertive">
+									{errors.genre?.message}
+								</span>
+							)}
 						</label>
 						<label className={styles["label"]}>
 							<p className={styles["text"]}>Мнение о книге или описание</p>
 							<textarea
-								name="description"
 								aria-label="Описание книги"
 								className={styles["textarea"]}
-								value={formData.description || ""}
-								onChange={handlerChange}
+								{...register("description")}
 							/>
 						</label>
-
 						<label className={styles["label"]}>
 							<p className={styles["text"]}>Оценить книгу</p>
 							<select
-								required
-								className={styles["select"]}
-								name="rating"
-								id="rating-select"
-								value={formData.rating}
-								onChange={handlerChange}
+								aria-label="Рейтинг книги"
+								className={clsx(
+									styles["select"],
+									errors.genre && styles["select--error"]
+								)}
+								{...register("rating")}
 							>
 								{ratings.map((r, index) => (
 									<option key={index} value={r.value}>
@@ -169,8 +154,13 @@ function AddBook() {
 									</option>
 								))}
 							</select>
+							{errors.rating && (
+								<span className={styles["error"]} aria-live="assertive">
+									{errors.rating?.message}
+								</span>
+							)}
 						</label>
-						<Button isPrimary disabled={isAdding || isUpdating}>
+						<Button isPrimary disabled={!isValid || isAdding || isUpdating}>
 							{isAdding || isUpdating
 								? "Сохранение..."
 								: book

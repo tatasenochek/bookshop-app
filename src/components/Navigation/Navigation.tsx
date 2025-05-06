@@ -17,7 +17,7 @@ function Navigation() {
 	const navigate = useNavigate();
 	const [signOut, { isLoading }] = useSignOutMutation();
 
-	async function handlerSignout() {
+	async function handleSignout() {
 		const res = confirm("Вы действительно хотите выйти?");
 		if (res) {
 			try {
@@ -38,7 +38,7 @@ function Navigation() {
 						aria-label="Личный кабинет"
 						title="Личный кабинет"
 						isPrimary
-						onClick={handlerSignout}
+						onClick={handleSignout}
 					>
 						{isLoading ? "Выход..." : userName}
 					</Button>

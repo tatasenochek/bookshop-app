@@ -27,7 +27,7 @@ function Book() {
 
 	const isOwner = userId === book?.user_id;
 
-	async function handlerDeleteButton() {
+	async function handleDeleteButton() {
 		const res = confirm("Вы действительно хотите удалить книгу?");
 		if (!res || !bookId) return;
 
@@ -41,7 +41,7 @@ function Book() {
 			}
 	}
 
-	function handlerEditButton() {
+	function handleEditButton() {
 		const res = confirm("Вы хотите редактировать книгу?");
 		if (!res) {
 			return;
@@ -89,14 +89,14 @@ function Book() {
 				</p>
 				{isOwner && (
 					<div className={styles["book-action"]}>
-						<Button isPrimary onClick={handlerEditButton}>
+						<Button isPrimary onClick={handleEditButton}>
 							Редактировать
 						</Button>
 						<Button
 							title="Удалить книгу"
 							isSecond
 							isSvg
-							onClick={handlerDeleteButton}
+							onClick={handleDeleteButton}
 						>
 							<Trash2 />
 						</Button>
