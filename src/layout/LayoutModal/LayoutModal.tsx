@@ -2,6 +2,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Modal } from "../../components/Modal/Modal";
 import { ComponentType, ReactNode, Suspense } from "react";
 import { ROUTES } from "../../const/const";
+import { ErrorBoundary } from "react-error-boundary";
+import ErrorPage from "../../pages/ErrorPage/ErrorPage";
 
 function LayoutModal({
 	title,
@@ -23,12 +25,12 @@ function LayoutModal({
 	}
 
 	return (
-		<>
+		<ErrorBoundary FallbackComponent={ErrorPage}>
 			<Component/>
 			<Modal isOpen={true} onClose={handleClose} title={title}>
 				<Suspense fallback={<>Загружаем страницу...</>}>{children}</Suspense>
 			</Modal>
-		</>
+		</ErrorBoundary>
 	);
 }
 

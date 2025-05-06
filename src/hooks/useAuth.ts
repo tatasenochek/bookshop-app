@@ -26,8 +26,9 @@ export const useAuth = () => {
 		getCurrentSession();
 
 		const { data: authListner } = supabase.auth.onAuthStateChange(
-			async (_event, session) => {
-				if (session?.user) {
+			async (event, session) => {
+				if (session?.user || event === "TOKEN_REFRESHED") {
+					if (!session) return;
 					dispatch(
 						setUser({
 							userUid: session.user.id,

@@ -1,0 +1,58 @@
+@use "../../styles/variables" as *;
+
+.error-page {
+	.header {
+		padding: $size-m 0 $size-xl;
+		display: flex;
+		justify-content: space-between;
+		border-bottom: 1px solid $color-darck-opasity;
+		align-items: center;
+		margin-bottom: $size-xxl;
+		flex-wrap: wrap;
+
+		.logo {
+			display: flex;
+			gap: $size-xs;
+			align-items: center;
+			color: $color-accent;
+			cursor: pointer;
+
+			.image {
+				width: 50px;
+			}
+
+			.title {
+				font-size: $size-m;
+				text-transform: uppercase;
+				line-height: 1.2;
+				width: 80px;
+				word-wrap: break-word;
+			}
+		}
+	}
+
+	.main {
+		text-align: center;
+		display: flex;
+		flex-direction: column;
+		gap: $size-m;
+
+		button {
+			margin: auto;
+			width: 200px;
+			height: 40px;
+			font-size: 16px;
+			padding: $size-xs $size-m;
+			border-radius: $size-xs;
+			transition: all 0.3s;
+			cursor: pointer;
+			border: 1px solid $color-accent;
+			background-color: $color-accent;
+			color: $color-light;
+
+			&:hover {
+				background-color: $color-accent-hover;
+			}
+		}
+	}
+}

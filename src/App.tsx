@@ -11,6 +11,7 @@ import { ROUTES } from "./const/const";
 import { useAuth } from "./hooks/useAuth";
 import { lazy } from "react";
 import LayoutModal from "./layout/LayoutModal/LayoutModal";
+import ErrorPage from "./pages/ErrorPage/ErrorPage";
 
 export const Signin = lazy(() => import("./pages/Signin/Signin"));
 export const Signup = lazy(() => import("./pages/Signup/Signup"));
@@ -23,6 +24,7 @@ const router = createBrowserRouter(
 		{
 			path: ROUTES.HOME,
 			element: <LayoutMain />,
+			errorElement: <ErrorPage />,
 			children: [
 				{
 					index: true,

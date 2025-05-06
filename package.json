@@ -24,6 +24,7 @@
 		"react": "^19.0.0",
 		"react-content-loader": "^7.0.2",
 		"react-dom": "^19.0.0",
+		"react-error-boundary": "^6.0.0",
 		"react-hook-form": "^7.56.2",
 		"react-redux": "^9.2.0",
 		"react-router-dom": "^7.4.0",
