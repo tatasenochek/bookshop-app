@@ -17,19 +17,18 @@
 ## Технологический стек
 
 Основные технологии:
-- React 18 (хуки, lazy loading)
-- TypeScript (полная типизация проекта)
-- Redux Toolkit + RTK Query (состояние и кеширование запросов)
-- Supabase (PostgreSQL + Authentication)
+- React;
+- TypeScript;
+- Redux Toolkit + RTK Query;
+- Supabase (PostgreSQL + Authentication);
+- Sass + CSS-module + clsx;
 
 Дополнительные библиотеки:
-
-| Библиотека          | Применение                          | Причина выбора                     |
-|---------------------|------------------------------------|-----------------------------------|
-| React Router DOM 6   | Навигация с модальными окнами       | Поддержка Data API                |
-| React Hook Form + Zod| Валидация 5+ форм                   | Производительность + TypeScript   |
-| Headless UI          | Доступные модальные окна            | Гибкость стилизации               |
-| Lucide Icons        | Иконки                              | Оптимизированный размер           |
+- React Router DOM;
+- React Hook Form + Zod;
+- React-error-boundary
+- React-toast;
+- Headless UI;
 
 ## Реализованный функционал
 
@@ -58,6 +57,7 @@
 - Реализовала взаимодействие с Supabase через RTK Query;
 - Настроила кэширование и инвалидацию;
 - Реализовала валидацию всех форм;
+- Реализовала защиту от непредвиденных ошибок Error Boundary;
 - Настроила чанки для разделения общего бандла;
 - Настроила ленивую загрузку компонентов;
 
