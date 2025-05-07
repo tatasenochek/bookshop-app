@@ -39,54 +39,59 @@ function AddBook() {
 					rating: book.rating,
 			  }
 			: {
-					genre: '',
-					rating: ratings[0].value,
+					genre: "",
+					rating: "",
 			  },
 	});
 
-	const onSubmit = useCallback(async (data: BookFormData) => {if (!userId) {
-		toast.error("Необходимо авторизоваться");
-		return;
-	}
+	const onSubmit = useCallback(
+		async (data: BookFormData) => {
+			if (!userId) {
+				toast.error("Необходимо авторизоваться");
+				return;
+			}
 
-	try {
-		if (book) {
-			await updateBook({
-				id: book.book_id,
-				updates: {
-					book_name: data.book_name,
-					book_author: data.book_author,
-					genre: data.genre,
-					description: data.description,
-					rating: data.rating,
-				},
-			}).unwrap();
+			try {
+				if (book) {
+					await updateBook({
+						id: book.book_id,
+						updates: {
+							book_name: data.book_name,
+							book_author: data.book_author,
+							genre: data.genre,
+							description: data.description,
+							rating: data.rating,
+						},
+					}).unwrap();
 
-			toast.success("Книга успешно обновлена!");
-			navigate(`${ROUTES.BOOK}/${book.book_id}`);
-		} else {
-			await addBook({
-				bookData: {
-					...data,
-					user_id: userId,
-				},
-			}).unwrap();
+					toast.success("Книга успешно обновлена!");
+					navigate(`${ROUTES.BOOK}/${book.book_id}`);
+				} else {
+					await addBook({
+						bookData: {
+							...data,
+							user_id: userId,
+						},
+					}).unwrap();
 
-			toast.success("Книга успешно добавлена!");
-			navigate(ROUTES.HOME);
-		}
-	} catch (error: unknown) {
-		let errorMessage;
+					toast.success("Книга успешно добавлена!");
+					navigate(ROUTES.HOME);
+				}
+			} catch (error: unknown) {
+				let errorMessage;
 
-		if (typeof error === "object" && error !== null && "data" in error) {
-			errorMessage = (error as { data: string }).data;
-		} else if (error instanceof Error) {
-			errorMessage = error.message;
-		}
+				if (typeof error === "object" && error !== null && "data" in error) {
+					errorMessage = (error as { data: string }).data;
+				} else if (error instanceof Error) {
+					errorMessage = error.message;
+				}
 
-		console.error(errorMessage);
-		toast.error("Ошибка в процессе отправки данных");
-	}}, [addBook, book, navigate, updateBook, userId]);
+				console.error(errorMessage);
+				toast.error("Ошибка в процессе отправки данных");
+			}
+		},
+		[addBook, book, navigate, updateBook, userId]
+	);
 
 	return (
 		<div className={styles["add-book"]}>
